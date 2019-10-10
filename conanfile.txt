@@ -1,0 +1,14 @@
+[requires]
+glfw/3.3@bincrafters/stable
+glew/2.1.0@bincrafters/stable
+glm/0.9.9.5@g-truc/stable
+imgui/1.69@bincrafters/stable
+
+[generators]
+cmake
+
+[imports]
+./misc/bindings, imgui_impl_glfw.cpp -> ../bindings
+./misc/bindings, imgui_impl_opengl3.cpp -> ../bindings
+./misc/bindings, imgui_impl_glfw.h -> ../bindings
+./misc/bindings, imgui_impl_opengl3.h -> ../bindings
