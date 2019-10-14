@@ -25,3 +25,10 @@ add_executable(cpp_glfw_test
 
 target_compile_definitions(cpp_glfw_test PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
 target_link_libraries(cpp_glfw_test ${CONAN_LIBS})
+
+add_custom_target(copy_shaders ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/shaders" "${CMAKE_BINARY_DIR}/bin/shaders"
+        COMMENT "Copy Shaders" VERBATIM)
+
+ADD_DEPENDENCIES(cpp_glfw_test copy_shaders)
