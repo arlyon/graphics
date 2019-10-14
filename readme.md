@@ -2,20 +2,41 @@
 
 Requires a graphics card with OpenGL 4.1 or above.
 
-## Install
+- INSTANCING MORE MARKS
+
+## Building
 
 This project uses conan to manage the dependencies. All the 
 packages are managed in `conanfile.txt`. To use it with cmake,
 install the dependencies and then run as usual.
 
+The project uses cmake, with the same folders as those clion uses.
+
+### Release
+
+```bash
+conan install . -s build_type=Release --install-folder=cmake-build-release
+cmake -DCMAKE_BUILD_TYPE=Release -B cmake-build-release
+cmake --build cmake-build-release --target cpp_glfw_test
+```
+
+### Debug
+
 ```bash
 conan install . -s build_type=Debug --install-folder=cmake-build-debug
-conan install . -s build_type=Release --install-folder=cmake-build-release
-
+cmake -DCMAKE_BUILD_TYPE=Debug -B cmake-build-debug
 cmake --build cmake-build-debug --target cpp_glfw_test
 ```
 
-- INSTANCING MORE MARKS
+### CLion
+
+To set up with CLion, just run the conan install commands and reload
+the cmake project.
+
+```bash
+conan install . -s build_type=Release --install-folder=cmake-build-release
+conan install . -s build_type=Debug --install-folder=cmake-build-debug
+```
 
 ## Libraries
 
