@@ -3,46 +3,43 @@
 //
 
 #include <iostream>
-
-#include <imgui.h>
-#include <GL/glew.h>
 #include <fstream>
 #include <sstream>
 #include <vector>
+
+#include <imgui.h>
+#include <GL/glew.h>
 
 #include "../lib/imgui_impl_glfw.h"
 #include "../lib/imgui_impl_opengl3.h"
 #include "initialize.h"
 
-GLuint linkProgram(const GLuint vertexShaderID, const GLuint fragmentShaderID);
-GLuint compileShader(const char *shaderPath, const uint shaderType);
+GLuint linkProgram(GLuint vertexShaderID, GLuint fragmentShaderID);
+GLuint compileShader(const char *shaderPath, GLuint shaderType);
 
 GLFWwindow *initializeOpenGL() {
     GLFWwindow *window;
 
     glewExperimental = GL_TRUE;
     if (glfwInit() != GLFW_TRUE) {
-        std::cout << "Couldn't initialize glfw" << std::endl;
+        std::cerr << "Couldn't initialize glfw" << std::endl;
         std::exit(-1);
     }
 
 #if __APPLE__
-    // GL 3.2 + GLSL 150
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#else
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#endif
+
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#else
-    // GL 3.0 + GLSL 130
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
-#endif
 
     window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
     if (window == nullptr) {
-        std::cout << "Couldn't initialize the window" << std::endl;
+        std::cerr << "Couldn't create the glfw window" << std::endl;
         glfwTerminate();
         std::exit(-1);
     }
@@ -51,7 +48,9 @@ GLFWwindow *initializeOpenGL() {
 
     GLenum err = glewInit();
     if (err) {
-        std::cout << "Couldn't initialize the window" << std::endl;
+        std::cerr << "Couldn't initialize glew" << std::endl;
+        std::cerr << glewGetErrorString(err);
+        glfwTerminate();
         std::exit(-1);
     }
 
@@ -98,7 +97,7 @@ GLuint initializeShaders(const char *vertexShaderPath, const char *fragmentShade
     return linkProgram(vertexShaderID, fragmentShaderID);
 }
 
-GLuint compileShader(const char *shaderPath, const uint shaderType) {
+GLuint compileShader(const char *shaderPath, const GLuint shaderType) {
     GLuint shaderID = glCreateShader(shaderType);
 
     std::string shaderCode;
