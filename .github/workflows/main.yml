@@ -1,0 +1,26 @@
+name: CI
+on: [push]
+jobs:
+  build-artifacts:
+    strategy:
+      matrix:
+        platform: [windows, macOS]
+    runs-on: '${{ matrix.platform }}-latest'
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@master
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+      - name: Install Dependencies
+        run: |
+          pip install conan
+          conan install . -s build_type=Debug --install-folder=debug --build=missing
+      - name: Build Project
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=Debug -B debug
+          cmake --build debug --target cpp_glfw_test
+      - uses: actions/upload-artifact@master
+        with:
+          name: '${{ matrix.platform }}'
+          path: debug/bin
