@@ -11,14 +11,23 @@
 #include "../lib/imgui_impl_opengl3.h"
 #include "../lib/imgui_impl_glfw.h"
 
-void render(GLfloat time, GLuint vertexArrayID, GLuint shaderProgramID) {
+void render(ECS::World *world, GLFWwindow *window, GLuint vertexBuffer, GLuint shaderProgramID) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     /* Draw Triangle */
     glUseProgram(shaderProgramID);
-    glBindVertexArray(vertexArrayID);
+    glBindVertexArray(vertexBuffer);
     glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
+    /* Error */
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        std::cout << "Render Error: 0x";
+        std::cout << std::hex << error << std::endl;
+    }
+}
+
+void renderUI() {
     /* DearImGui */
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -28,11 +37,4 @@ void render(GLfloat time, GLuint vertexArrayID, GLuint shaderProgramID) {
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    /* Error */
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR) {
-        std::cout << "Render Error: 0x";
-        std::cout << std::hex << error << std::endl;
-    }
 }

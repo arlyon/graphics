@@ -12,12 +12,11 @@ endif ()
 
 add_executable(cpp_glfw_test
         src/main.cpp
-        src/render.cpp
-        src/render.h
-        src/update.cpp
-        src/update.h
-        src/initialize.cpp
-        src/initialize.h
+        src/render.cpp src/render.h
+        src/update.cpp src/update.h
+        src/initialize.cpp src/initialize.h
+        src/settings.cpp src/settings.h
+
         lib/ECS.h
         lib/imgui_impl_glfw.cpp
         lib/imgui_impl_glfw.h

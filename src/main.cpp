@@ -7,11 +7,16 @@
 #include "render.h"
 #include "update.h"
 #include "initialize.h"
+#include "settings.h"
 
 void initializeGeometry(GLuint &vertexBufferID, GLuint &vertexArrayID);
 
 int main() {
-    GLFWwindow *window = initializeOpenGL();
+    auto &settings = Settings::getInstance();
+    auto *world = initializeWorld();
+
+    auto *window = initializeOpenGL();
+    glfwSetWindowUserPointer(window, &settings); // add settings to window
     initializeUI(window);
 
     GLuint vertexBufferID, vertexArrayID;
@@ -34,14 +39,13 @@ int main() {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        update(currentTime);
-        render(currentTime, vertexArrayID, shaderProgramID);
-
+        update(world, deltaTime);
+        render(world, window, vertexArrayID, shaderProgramID);
+        if (settings.enable_menu) renderUI();
         glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
-    teardown(vertexBufferID, vertexArrayID, shaderProgramID);
+    teardown(world, vertexBufferID, vertexArrayID, shaderProgramID);
 }
 
 void initializeGeometry(GLuint &vertexBufferID, GLuint &vertexArrayID) {

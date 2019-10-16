@@ -5,6 +5,8 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#include "../lib/ECS.h"
 
-void render(GLfloat time, GLuint i, GLuint shaderProgramID);
+void render(ECS::World *world, GLFWwindow *window, GLuint vertexBuffer, GLuint shaderProgramID);
+void renderUI();
 

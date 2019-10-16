@@ -13,6 +13,7 @@
 #include "../lib/imgui_impl_glfw.h"
 #include "../lib/imgui_impl_opengl3.h"
 #include "initialize.h"
+#include "settings.h"
 
 GLuint linkProgram(GLuint vertexShaderID, GLuint fragmentShaderID);
 GLuint compileShader(const char *shaderPath, GLuint shaderType);
@@ -78,10 +79,15 @@ void initializeUI(GLFWwindow *window) {
 #endif
 
     ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
-    ImGui::StyleColorsDark();
+
+    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
+            auto *settings = static_cast<Settings*>(glfwGetWindowUserPointer(window));
+            settings->enable_menu = !settings->enable_menu;
+        }
+    });
 }
 
 /**
@@ -173,7 +179,17 @@ GLuint linkProgram(const GLuint vertexShaderID, const GLuint fragmentShaderID) {
     return programID;
 }
 
-void teardown(GLuint vertexbuffer, GLuint vertexArrayId, GLuint programID) {
+ECS::World *initializeWorld() {
+    ECS::World *world = ECS::World::createWorld();
+
+    // register systems here...
+
+    return world;
+}
+
+void teardown(ECS::World *world, GLuint vertexbuffer, GLuint vertexArrayId, GLuint programID) {
+    world->destroyWorld();
+
     glDeleteBuffers(1, &vertexbuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
     glDeleteProgram(programID);

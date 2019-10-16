@@ -5,16 +5,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-
-enum ShaderType {
-    Fragment,
-    Vertex
-};
-
-typedef struct {
-    std::string path;
-    ShaderType type;
-} Shader;
+#include "../lib/ECS.h"
 
 GLFWwindow *initializeOpenGL();
 
@@ -22,4 +13,6 @@ void initializeUI(GLFWwindow *window);
 
 GLuint initializeShaders(const char *vertexShaderPath, const char *fragmentShaderPath);
 
-void teardown(GLuint vertexbuffer, GLuint vertexArrayId, GLuint programID);
+ECS::World *initializeWorld();
+
+void teardown(ECS::World *world, GLuint vertexbuffer, GLuint vertexArrayId, GLuint programID);

@@ -6,5 +6,7 @@
 
 #include <GLFW/glfw3.h>
 
-void update(GLfloat time);
+#include "../lib/ECS.h"
+
+void update(ECS::World *world, GLfloat time);
 
