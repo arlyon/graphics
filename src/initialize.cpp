@@ -10,8 +10,8 @@
 #include <sstream>
 #include <vector>
 
-#include "../bindings/imgui_impl_glfw.h"
-#include "../bindings/imgui_impl_opengl3.h"
+#include "../lib/imgui_impl_glfw.h"
+#include "../lib/imgui_impl_opengl3.h"
 #include "initialize.h"
 
 GLuint linkProgram(const GLuint vertexShaderID, const GLuint fragmentShaderID);

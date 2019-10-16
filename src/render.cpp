@@ -8,8 +8,8 @@
 #include <iostream>
 
 #include "render.h"
-#include "../bindings/imgui_impl_opengl3.h"
-#include "../bindings/imgui_impl_glfw.h"
+#include "../lib/imgui_impl_opengl3.h"
+#include "../lib/imgui_impl_glfw.h"
 
 void render(GLfloat time, GLuint vertexArrayID, GLuint shaderProgramID) {
     glClear(GL_COLOR_BUFFER_BIT);

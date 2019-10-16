@@ -46,5 +46,5 @@ _deps
 *.out
 *.app
 
-bindings/
+lib/imgui*
 cmake-build-*/

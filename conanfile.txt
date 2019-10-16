@@ -8,7 +8,7 @@ imgui/1.69@bincrafters/stable
 cmake
 
 [imports]
-./misc/bindings, imgui_impl_glfw.cpp -> ../bindings
-./misc/bindings, imgui_impl_opengl3.cpp -> ../bindings
-./misc/bindings, imgui_impl_glfw.h -> ../bindings
-./misc/bindings, imgui_impl_opengl3.h -> ../bindings
+./misc/bindings, imgui_impl_glfw.cpp -> ../lib
+./misc/bindings, imgui_impl_opengl3.cpp -> ../lib
+./misc/bindings, imgui_impl_glfw.h -> ../lib
+./misc/bindings, imgui_impl_opengl3.h -> ../lib
