@@ -13,7 +13,7 @@ void initializeGeometry(GLuint &vertexBufferID, GLuint &vertexArrayID);
 
 int main() {
     auto &settings = Settings::getInstance();
-    auto *world = initializeWorld();
+    auto registry = entt::registry{};
 
     auto *window = initializeOpenGL();
     glfwSetWindowUserPointer(window, &settings); // add settings to window
@@ -39,13 +39,13 @@ int main() {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        update(world, deltaTime);
-        render(world, window, vertexArrayID, shaderProgramID);
+        update(registry, deltaTime);
+        render(registry, window, vertexArrayID, shaderProgramID);
         if (settings.enable_menu) renderUI();
         glfwSwapBuffers(window);
     }
 
-    teardown(world, vertexBufferID, vertexArrayID, shaderProgramID);
+    teardown(vertexBufferID, vertexArrayID, shaderProgramID);
 }
 
 void initializeGeometry(GLuint &vertexBufferID, GLuint &vertexArrayID) {

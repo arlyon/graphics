@@ -29,12 +29,15 @@ pip install conan
 This project uses a few libraries. This is how you properly compile them.
 All the packages are managed in `conanfile.txt`.
 
-| Library | Purpose |
-| ------- | ------- |
-| GLFW    | Lightweight cross-platform library for handling OpenGL windows, context, and input |
-| GLEW    | Cross-platform library for determining available OpenGL extensions |
-| GLM     | Cross-platform math library for use with OpenGL |
-| imgui   | A simple UI library |
+| Library | Purpose | License |
+| ------- | ------- | ------- |
+| GLFW    | Lightweight cross-platform library for handling OpenGL windows, context, and input | zlib/libpng |
+| GLEW    | Cross-platform library for determining available OpenGL extensions | MIT |
+| GLM     | Cross-platform math library for use with OpenGL | MIT |
+| imgui   | A simple UI library | MIT |
+| entt    | Simple ECS library for data-oriented programming | MIT |
+| obj_loader | A header-only library for loading obj meshes | MIT |
+
 
 ## Building
 

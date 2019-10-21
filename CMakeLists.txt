@@ -17,7 +17,6 @@ add_executable(cpp_glfw_test
         src/initialize.cpp src/initialize.h
         src/settings.cpp src/settings.h
 
-        lib/ECS.h
         lib/imgui_impl_glfw.cpp
         lib/imgui_impl_glfw.h
         lib/imgui_impl_opengl3.cpp

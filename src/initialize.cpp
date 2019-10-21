@@ -9,6 +9,7 @@
 
 #include <imgui.h>
 #include <GL/glew.h>
+#include <entt/entt.hpp>
 
 #include "../lib/imgui_impl_glfw.h"
 #include "../lib/imgui_impl_opengl3.h"
@@ -179,17 +180,7 @@ GLuint linkProgram(const GLuint vertexShaderID, const GLuint fragmentShaderID) {
     return programID;
 }
 
-ECS::World *initializeWorld() {
-    ECS::World *world = ECS::World::createWorld();
-
-    // register systems here...
-
-    return world;
-}
-
-void teardown(ECS::World *world, GLuint vertexbuffer, GLuint vertexArrayId, GLuint programID) {
-    world->destroyWorld();
-
+void teardown(GLuint vertexbuffer, GLuint vertexArrayId, GLuint programID) {
     glDeleteBuffers(1, &vertexbuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
     glDeleteProgram(programID);

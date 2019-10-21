@@ -5,8 +5,8 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include "../lib/ECS.h"
+#include <entt/entt.hpp>
 
-void render(ECS::World *world, GLFWwindow *window, GLuint vertexBuffer, GLuint shaderProgramID);
+void render(entt::registry &registry, GLFWwindow *window, GLuint vertexBuffer, GLuint shaderProgramID);
 void renderUI();
 

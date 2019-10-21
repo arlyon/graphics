@@ -11,7 +11,7 @@
 #include "../lib/imgui_impl_opengl3.h"
 #include "../lib/imgui_impl_glfw.h"
 
-void render(ECS::World *world, GLFWwindow *window, GLuint vertexBuffer, GLuint shaderProgramID) {
+void render(entt::registry &registry, GLFWwindow *window, GLuint vertexBuffer, GLuint shaderProgramID) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     /* Draw Triangle */

@@ -6,9 +6,6 @@
 
 #include "update.h"
 
-void update(ECS::World *world, GLfloat deltaTime) {
+void update(entt::registry &registry, GLfloat deltaTime) {
     glfwPollEvents();
-    world->tick(deltaTime);
-
-
 }

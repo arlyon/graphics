@@ -5,8 +5,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#include <entt/entt.hpp>
 
-#include "../lib/ECS.h"
-
-void update(ECS::World *world, GLfloat time);
+void update(entt::registry &registry, GLfloat time);
 
