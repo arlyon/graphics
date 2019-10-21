@@ -6,6 +6,8 @@
 
 #include <stdint.h>
 
+#include <GL/glew.h>
+
 class Settings {
 public:
     static Settings &getInstance() {
@@ -17,7 +19,9 @@ public:
     void operator=(Settings const &) = delete;
 
     uint32_t fish = 32;
-    bool enable_menu = false;
+	GLfloat fov = 60.0f;
+    bool enable_menu = true;
+	bool orbit = true;
 private:
     Settings() = default;
 };

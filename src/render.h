@@ -7,6 +7,8 @@
 #include <GLFW/glfw3.h>
 #include <entt/entt.hpp>
 
-void render(entt::registry &registry, GLFWwindow *window, GLuint vertexBuffer, GLuint shaderProgramID);
+#include "components/model.h"
+
+void render(entt::registry &registry, entt::entity *cam, struct model fishModel);
 void renderUI();
 

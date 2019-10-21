@@ -17,11 +17,22 @@
 #include "settings.h"
 
 GLuint linkProgram(GLuint vertexShaderID, GLuint fragmentShaderID);
+
 GLuint compileShader(const char *shaderPath, GLuint shaderType);
 
-GLFWwindow *initializeOpenGL() {
-    GLFWwindow *window;
+void GLAPIENTRY MessageCallback(GLenum source,
+                GLenum type,
+                GLuint id,
+                GLenum severity,
+                GLsizei length,
+                const GLchar *message,
+                const void *userParam) {
+    fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+            (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+            type, severity, message);
+}
 
+GLFWwindow *initializeOpenGL() {
     glewExperimental = GL_TRUE;
     if (glfwInit() != GLFW_TRUE) {
         std::cerr << "Couldn't initialize glfw" << std::endl;
@@ -29,16 +40,22 @@ GLFWwindow *initializeOpenGL() {
     }
 
 #if __APPLE__
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 #else
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 #endif
 
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
+    if (glfwInit() != GLFW_TRUE) {
+        std::cerr << "Couldn't initialize glfw" << std::endl;
+        std::exit(-1);
+    }
+
+    GLFWwindow *window;
     window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
     if (window == nullptr) {
         std::cerr << "Couldn't create the glfw window" << std::endl;
@@ -48,6 +65,7 @@ GLFWwindow *initializeOpenGL() {
 
     glfwMakeContextCurrent(window);
 
+    glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     if (err) {
         std::cerr << "Couldn't initialize glew" << std::endl;
@@ -61,9 +79,13 @@ GLFWwindow *initializeOpenGL() {
     std::cout << "VENDOR: " << (char *) glGetString(GL_VENDOR) << std::endl;
     std::cout << "VERSION: " << (char *) glGetString(GL_VERSION) << std::endl;
     std::cout << "RENDERER: " << (char *) glGetString(GL_RENDERER) << std::endl;
-#endif
 
-    // glClearColor(0.8f, 0.3f, 0.1f, 0.0f);
+#if __APPLE__
+#else
+	glDebugMessageCallback(MessageCallback, 0);
+    glEnable(GL_DEBUG_OUTPUT);
+#endif
+#endif
 
     return window;
 }
@@ -83,9 +105,9 @@ void initializeUI(GLFWwindow *window) {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+    glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
-            auto *settings = static_cast<Settings*>(glfwGetWindowUserPointer(window));
+            auto *settings = static_cast<Settings *>(glfwGetWindowUserPointer(window));
             settings->enable_menu = !settings->enable_menu;
         }
     });
@@ -184,7 +206,7 @@ void teardown(GLuint vertexbuffer, GLuint vertexArrayId, GLuint programID) {
     glDeleteBuffers(1, &vertexbuffer);
     glDeleteVertexArrays(1, &vertexArrayId);
     glDeleteProgram(programID);
-    
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

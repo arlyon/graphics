@@ -16,11 +16,13 @@ add_executable(cpp_glfw_test
         src/update.cpp src/update.h
         src/initialize.cpp src/initialize.h
         src/settings.cpp src/settings.h
+        src/components/model.h
 
+        lib/tiny_obj_loader.h
         lib/imgui_impl_glfw.cpp
         lib/imgui_impl_glfw.h
         lib/imgui_impl_opengl3.cpp
-        lib/imgui_impl_opengl3.h)
+        lib/imgui_impl_opengl3.h lib/tiny_obj_loader.cpp)
 
 target_compile_definitions(cpp_glfw_test PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
 target_link_libraries(cpp_glfw_test ${CONAN_LIBS})
@@ -30,4 +32,10 @@ add_custom_target(copy_shaders ALL
         "${CMAKE_SOURCE_DIR}/shaders" "${CMAKE_BINARY_DIR}/bin/shaders"
         COMMENT "Copy Shaders" VERBATIM)
 
+add_custom_target(copy_models ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/models" "${CMAKE_BINARY_DIR}/bin/models"
+        COMMENT "Copy Models" VERBATIM)
+
 ADD_DEPENDENCIES(cpp_glfw_test copy_shaders)
+ADD_DEPENDENCIES(cpp_glfw_test copy_models)

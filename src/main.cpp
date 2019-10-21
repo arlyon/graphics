@@ -8,8 +8,10 @@
 #include "update.h"
 #include "initialize.h"
 #include "settings.h"
+#include "components/model.h"
+#include "../lib/tiny_obj_loader.h"
 
-void initializeGeometry(GLuint &vertexBufferID, GLuint &vertexArrayID);
+void convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t>& vertices, GLuint& vertexBufferID, GLuint& vertexArrayID);
 
 int main() {
     auto &settings = Settings::getInstance();
@@ -19,8 +21,14 @@ int main() {
     glfwSetWindowUserPointer(window, &settings); // add settings to window
     initializeUI(window);
 
+    auto reader = tinyobj::ObjReader{};
+	if (!reader.ParseFromFile("models/cube.obj")) {
+		std::cout << "Couldn't load model." << std::endl;
+		std::exit(1);
+	}
+
     GLuint vertexBufferID, vertexArrayID;
-    initializeGeometry(vertexBufferID, vertexArrayID);
+	convertGeometry(reader.GetShapes()[0].mesh, reader.GetAttrib().vertices, vertexBufferID, vertexArrayID);
 
     GLuint shaderProgramID;
     try {
@@ -29,6 +37,17 @@ int main() {
         std::cerr << error << std::endl;
         std::exit(1);
     }
+
+    struct model fishModel = {vertexBufferID, vertexArrayID, shaderProgramID, reader.GetShapes()[0].mesh.num_face_vertices.size()};
+    for (int i = 0; i < 3; i++) {
+        auto fish = registry.create();
+        registry.assign<position>(fish, i * 2, 0, 0);
+        registry.assign<model>(fish, fishModel);
+    }
+
+	auto cam = registry.create();
+	registry.assign<position>(cam, 4, 3, 3);
+	registry.assign<camera>(cam, &settings.fov, window);
 
     GLfloat currentTime;
     GLfloat deltaTime;
@@ -39,8 +58,8 @@ int main() {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        update(registry, deltaTime);
-        render(registry, window, vertexArrayID, shaderProgramID);
+        update(registry, deltaTime, currentTime);
+        render(registry, &cam, fishModel);
         if (settings.enable_menu) renderUI();
         glfwSwapBuffers(window);
     }
@@ -48,15 +67,29 @@ int main() {
     teardown(vertexBufferID, vertexArrayID, shaderProgramID);
 }
 
-void initializeGeometry(GLuint &vertexBufferID, GLuint &vertexArrayID) {
-    static const GLfloat g_vertex_buffer_data[] = {
-            -1.0f, -1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-    };
+/**
+ * Initializes a triangle into the given vertex buffer and array.
+ * 
+ * Creates a buffer and sets vertexBufferID to the new value.
+ * Selects the bufferand loads the vertices into it.
+ * 
+ * @param vertexBufferID
+ * @param vertexArrayID
+ */
+void convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t> &vertices, GLuint &vertexBufferID, GLuint &vertexArrayID) {
+
+	std::vector<tinyobj::real_t> vec;
+	for (auto index : mesh.indices) {
+		uint8_t vertexCount = 3;
+		for (int i = 0; i < vertexCount; i++) {
+			vec.push_back(vertices[index.vertex_index * vertexCount + i]);
+		}
+	}
+
     glGenBuffers(1, &vertexBufferID);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(tinyobj::real_t) * vec.size(), &vec.at(0), GL_STATIC_DRAW);
+
     glGenVertexArrays(1, &vertexArrayID);
     glBindVertexArray(vertexArrayID);
     glEnableVertexAttribArray(0);

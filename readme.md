@@ -36,7 +36,7 @@ All the packages are managed in `conanfile.txt`.
 | GLM     | Cross-platform math library for use with OpenGL | MIT |
 | imgui   | A simple UI library | MIT |
 | entt    | Simple ECS library for data-oriented programming | MIT |
-| obj_loader | A header-only library for loading obj meshes | MIT |
+| tiny_obj_loader | A header-only library for loading obj meshes | MIT |
 
 
 ## Building

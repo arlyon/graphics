@@ -48,3 +48,9 @@ _deps
 
 lib/imgui*
 cmake-build-*/
+!models/*.obj
+.vs
+Release
+debug
+x64
+bin
