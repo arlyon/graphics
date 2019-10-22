@@ -11,7 +11,7 @@
 #include "components/model.h"
 #include "../lib/tiny_obj_loader.h"
 
-void convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t>& vertices, GLuint& vertexBufferID, GLuint& vertexArrayID);
+bool convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t>& vertices, GLuint& vertexBufferID, GLuint& vertexArrayID);
 
 int main() {
     auto &settings = Settings::getInstance();
@@ -28,7 +28,9 @@ int main() {
 	}
 
     GLuint vertexBufferID, vertexArrayID;
-	convertGeometry(reader.GetShapes()[0].mesh, reader.GetAttrib().vertices, vertexBufferID, vertexArrayID);
+	if (!convertGeometry(reader.GetShapes()[0].mesh, reader.GetAttrib().vertices, vertexBufferID, vertexArrayID)) {
+	    std::cout << "Error parsing geometry. Are you only using triangles?" << std::endl;
+	}
 
     GLuint shaderProgramID;
     try {
@@ -76,7 +78,11 @@ int main() {
  * @param vertexBufferID
  * @param vertexArrayID
  */
-void convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t> &vertices, GLuint &vertexBufferID, GLuint &vertexArrayID) {
+bool convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t> &vertices, GLuint &vertexBufferID, GLuint &vertexArrayID) {
+    for (auto vert : mesh.num_face_vertices) {
+        // only support triangles
+        if (vert != 3) return false;
+    }
 
 	std::vector<tinyobj::real_t> vec;
 	for (auto index : mesh.indices) {
@@ -95,5 +101,7 @@ void convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t> &v
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    return true;
 }
 
