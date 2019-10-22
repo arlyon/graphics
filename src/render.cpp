@@ -58,7 +58,8 @@ void render(entt::registry &registry, entt::entity *cam, struct model fishModel)
         std::cout << std::hex << error << std::endl;
     }
 
-	glClearColor(0.8f, 0.5f, 0.2f, 0.0f);
+    auto color = Settings::getInstance().color;
+	glClearColor(color[0], color[1], color[2], 0.0f);
 }
 
 void renderUI() {
@@ -71,6 +72,7 @@ void renderUI() {
     ImGui::Begin("Debug Menu");
 	ImGui::Checkbox("Camera Orbit", &settings.orbit);
 	ImGui::SliderFloat("Camera FOV", &settings.fov, 30.0f, 120.0f);
+    ImGui::ColorEdit3("Background Color", settings.color);
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
