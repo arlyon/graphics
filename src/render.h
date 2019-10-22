@@ -9,6 +9,6 @@
 
 #include "components/model.h"
 
-void render(entt::registry &registry, entt::entity *cam, struct model fishModel);
+void render(entt::registry &registry, entt::entity *cam);
 void renderUI();
 

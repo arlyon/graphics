@@ -14,42 +14,48 @@
 #include "../lib/imgui_impl_glfw.h"
 #include "settings.h"
 
-
-const glm::mat4 PROJECTION = glm::perspective(glm::radians(60.0f), 1.4f, 0.1f, 100.0f);
-
-
-void render(entt::registry &registry, entt::entity *cam, struct model fishModel) {
+void render(entt::registry &registry, entt::entity *cam) {
     glClear(GL_COLOR_BUFFER_BIT);
 
 	auto cameras = registry.view<camera, position>();
-    auto objects = registry.view<model, position>();
-    auto objectCount = objects.size();
+    camera camData = cameras.get<camera>(*cam);
+    position camPos = cameras.get<position>(*cam);
 
-	const glm::mat4 view = glm::lookAt(
-		cameras.get<position>(*cam),
-		glm::vec3(0, 0, 0), // and looks at the origin
-		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+	const glm::mat4 viewMatrix = glm::lookAt(
+		camPos,
+		glm::vec3(0, 0, 0), // looking at the origin
+		glm::vec3(0, 1, 0)  // head is up
 	);
 
-	const glm::mat4 proj = glm::perspective(
-		glm::radians(*cameras.get<camera>(*cam).fov),
-		1.4f, 
-		0.1f, 
+	int width, height;
+    glfwGetWindowSize(camData.window, &width, &height);
+	const glm::mat4 projectionMatrix = glm::perspective(
+		glm::radians(*camData.fov),
+        (float)width / height,
+		0.1f,
 		100.0f
 	);
 
-	glUseProgram(fishModel.programID);
-	glBindVertexArray(fishModel.vertexArrayID);
-	for (auto model : objects) {
-		auto pos = objects.get<position>(model);
-		glm::mat4 Model = glm::mat4(pos.x);
-		glm::mat4 mvp = proj * view * Model;
-		GLuint MatrixID = glGetUniformLocation(fishModel.programID, "MVP");
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
-		glDrawArrays(GL_TRIANGLES, 0, fishModel.triangles * 3);
+    auto objects = registry.view<model, position>();
+	for (auto object : objects) {
+	    // todo(arlyon) instancing
+		auto pos = objects.get<position>(object);
+		auto mod = objects.get<model>(object);
+        glUseProgram(mod.programID);
+        glBindVertexArray(mod.vertexArrayID);
+
+		glm::mat4 modelMatrix = glm::mat4(1.0f);
+		modelMatrix[3][0] = pos.x;
+		modelMatrix[3][1] = pos.y;
+		modelMatrix[3][2] = pos.z;
+		glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
+		GLuint mvpID = glGetUniformLocation(mod.programID, "MVP");
+		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
+		glDrawArrays(GL_TRIANGLES, 0, mod.triangles * 3);
+
+        glBindVertexArray(0);
+        glUseProgram(0);
 	}
-	glBindVertexArray(0);
-	glUseProgram(0);
 
     /* Error */
     GLenum error = glGetError();

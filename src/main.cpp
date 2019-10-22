@@ -61,7 +61,7 @@ int main() {
         lastTime = currentTime;
 
         update(registry, deltaTime, currentTime);
-        render(registry, &cam, fishModel);
+        render(registry, &cam);
         if (settings.enable_menu) renderUI();
         glfwSwapBuffers(window);
     }
