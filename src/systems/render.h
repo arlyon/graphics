@@ -7,5 +7,8 @@
 #include <GLFW/glfw3.h>
 #include <entt/entt.hpp>
 
-void update(entt::registry &registry, GLfloat deltaTime, GLfloat currentTime);
+#include "../components/model.h"
+
+void render(entt::registry &registry, entt::entity *cam);
+void renderUI();
 

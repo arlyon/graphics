@@ -12,8 +12,8 @@ endif ()
 
 add_executable(cpp_glfw_test
         src/main.cpp
-        src/render.cpp src/render.h
-        src/update.cpp src/update.h
+        src/systems/render.cpp src/systems/render.h
+        src/systems/camera_orbit.cpp src/systems/camera_orbit.h
         src/initialize.cpp src/initialize.h
         src/settings.cpp src/settings.h
         src/components/model.h

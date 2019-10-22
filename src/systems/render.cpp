@@ -10,9 +10,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "render.h"
-#include "../lib/imgui_impl_opengl3.h"
-#include "../lib/imgui_impl_glfw.h"
-#include "settings.h"
+#include "../../lib/imgui_impl_opengl3.h"
+#include "../../lib/imgui_impl_glfw.h"
+#include "../settings.h"
 
 void render(entt::registry &registry, entt::entity *cam) {
     glClear(GL_COLOR_BUFFER_BIT);

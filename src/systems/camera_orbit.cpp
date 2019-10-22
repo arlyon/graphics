@@ -4,13 +4,13 @@
 
 #include <GL/glew.h>
 
-#include "update.h"
-#include "components/model.h"
-#include "settings.h"
+#include "camera_orbit.h"
+#include "../components/model.h"
+#include "../settings.h"
 
 GLfloat rotateTime = 0.0f;
 
-void update(entt::registry &registry, GLfloat deltaTime, GLfloat currentTime) {
+void camera_orbit(entt::registry &registry, GLfloat deltaTime) {
     glfwPollEvents();
 
 	auto &s = Settings::getInstance();

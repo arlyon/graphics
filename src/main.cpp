@@ -4,8 +4,8 @@
 #include <GL/glew.h>
 #include <imgui.h>
 
-#include "render.h"
-#include "update.h"
+#include "systems/render.h"
+#include "systems/camera_orbit.h"
 #include "initialize.h"
 #include "settings.h"
 #include "components/model.h"
@@ -60,7 +60,7 @@ int main() {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        update(registry, deltaTime, currentTime);
+        camera_orbit(registry, deltaTime);
         render(registry, &cam);
         if (settings.enable_menu) renderUI();
         glfwSwapBuffers(window);
