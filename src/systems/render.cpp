@@ -12,9 +12,9 @@
 #include "../../lib/imgui_impl_opengl3.h"
 #include "../../lib/imgui_impl_glfw.h"
 
-#include "render.h"
-#include "../components/components.h"
-#include "../settings.h"
+#include "render.hpp"
+#include "../components/components.hpp"
+#include "../settings.hpp"
 
 /**
  * Renders all models with positions from the

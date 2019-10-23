@@ -4,9 +4,9 @@
 
 #include <GL/glew.h>
 
-#include "camera_orbit.h"
-#include "../components/components.h"
-#include "../settings.h"
+#include "camera_orbit.hpp"
+#include "../components/components.hpp"
+#include "../settings.hpp"
 
 GLfloat rotateTime = 0.0f;
 

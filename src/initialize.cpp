@@ -13,8 +13,8 @@
 
 #include "../lib/imgui_impl_glfw.h"
 #include "../lib/imgui_impl_opengl3.h"
-#include "initialize.h"
-#include "settings.h"
+#include "initialize.hpp"
+#include "settings.hpp"
 
 GLuint linkProgram(GLuint vertexShaderID, GLuint fragmentShaderID);
 

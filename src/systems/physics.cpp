@@ -2,8 +2,8 @@
 // Created by Alexander Lyon on 2019-10-23.
 //
 
-#include "physics.h"
-#include "../components/components.h"
+#include "physics.hpp"
+#include "../components/components.hpp"
 
 /**
  * Newton's First Law:

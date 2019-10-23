@@ -4,14 +4,14 @@
 #include <GL/glew.h>
 #include <imgui.h>
 
-#include "systems/render.h"
-#include "systems/camera_orbit.h"
-#include "initialize.h"
-#include "settings.h"
-#include "components/components.h"
+#include "systems/render.hpp"
+#include "systems/camera_orbit.hpp"
+#include "initialize.hpp"
+#include "settings.hpp"
+#include "components/components.hpp"
 #include "../lib/tiny_obj_loader.h"
-#include "systems/fish_population.h"
-#include "systems/physics.h"
+#include "systems/fish_population.hpp"
+#include "systems/physics.hpp"
 
 bool convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t>& vertices, GLuint& vertexBufferID, GLuint& vertexArrayID);
 
