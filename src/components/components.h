@@ -15,7 +15,7 @@
 /**
  * A model to be rendered by OpenGL
  */
-struct model {
+struct renderable {
     GLuint vertexBufferID; // the vertex buffer for this model
     GLuint vertexArrayID; // the vertex array for this model
     GLuint programID; // the program to use when rendering this model

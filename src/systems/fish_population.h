@@ -5,6 +5,6 @@
 #pragma once
 
 #include <entt/entt.hpp>
-#include "../components/model.h"
+#include "../components/components.h"
 
-void fish_population(entt::registry &registry, model fishModel);
+void fish_population(entt::registry &registry, renderable fishModel);

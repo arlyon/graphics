@@ -3,7 +3,7 @@
 //
 
 #include "physics.h"
-#include "../components/model.h"
+#include "../components/components.h"
 
 /**
  * Newton's First Law:

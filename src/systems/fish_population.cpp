@@ -4,7 +4,7 @@
 
 #include "fish_population.h"
 #include "../settings.h"
-#include "../components/model.h"
+#include "../components/components.h"
 
 /**
  * Handles the spawning and despawning of fish,
@@ -12,10 +12,10 @@
  *
  * Fish are spawned in and destroyed randomly.
  */
-void fish_population(entt::registry &registry, model fishModel) {
+void fish_population(entt::registry &registry, renderable fishModel) {
     auto &s = Settings::getInstance();
 
-    auto f = registry.view<fish, model, position>();
+    auto f = registry.view<fish, renderable, position>();
     int64_t fishDeficit = s.fish - f.size();
     if (fishDeficit >= 0) {
         // create some (or none)
@@ -23,7 +23,7 @@ void fish_population(entt::registry &registry, model fishModel) {
             auto entity = registry.create();
             registry.assign<position>(entity, glm::vec3(i, 0, 0));
             registry.assign<velocity>(entity, glm::vec3(0.5, 0, 0));
-            registry.assign<model>(entity, fishModel);
+            registry.assign<renderable>(entity, fishModel);
             registry.assign<fish>(entity);
         }
     } else {

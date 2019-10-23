@@ -13,7 +13,7 @@
 #include "../../lib/imgui_impl_glfw.h"
 
 #include "render.h"
-#include "../components/model.h"
+#include "../components/components.h"
 #include "../settings.h"
 
 /**
@@ -42,11 +42,11 @@ void render(entt::registry &registry, entt::entity *cam) {
 		100.0f
 	);
 
-    auto objects = registry.view<model, position>();
+    auto objects = registry.view<renderable, position>();
 	for (auto object : objects) {
 	    // todo(arlyon) instancing
 		auto pos = objects.get<position>(object);
-		auto mod = objects.get<model>(object);
+		auto mod = objects.get<renderable>(object);
         glUseProgram(mod.programID);
         glBindVertexArray(mod.vertexArrayID);
 

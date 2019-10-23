@@ -8,7 +8,7 @@
 #include "systems/camera_orbit.h"
 #include "initialize.h"
 #include "settings.h"
-#include "components/model.h"
+#include "components/components.h"
 #include "../lib/tiny_obj_loader.h"
 #include "systems/fish_population.h"
 #include "systems/physics.h"
@@ -42,7 +42,7 @@ int main() {
         std::exit(1);
     }
 
-    model fishModel = {vertexBufferID, vertexArrayID, shaderProgramID, reader.GetShapes()[0].mesh.num_face_vertices.size()};
+    renderable fishModel = {vertexBufferID, vertexArrayID, shaderProgramID, reader.GetShapes()[0].mesh.num_face_vertices.size()};
 
 	auto cam = registry.create();
 	registry.assign<position>(cam, glm::vec3(4,3,3));
