@@ -11,6 +11,7 @@
 #include "components/model.h"
 #include "../lib/tiny_obj_loader.h"
 #include "systems/fish_population.h"
+#include "systems/physics.h"
 
 bool convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t>& vertices, GLuint& vertexBufferID, GLuint& vertexArrayID);
 
@@ -44,7 +45,7 @@ int main() {
     model fishModel = {vertexBufferID, vertexArrayID, shaderProgramID, reader.GetShapes()[0].mesh.num_face_vertices.size()};
 
 	auto cam = registry.create();
-	registry.assign<position>(cam, 4, 3, 3);
+	registry.assign<position>(cam, glm::vec3(4,3,3));
 	registry.assign<camera>(cam, &settings.fov, window);
 
     GLfloat currentTime;
@@ -58,9 +59,12 @@ int main() {
 
         /* Run Systems */
         camera_orbit(registry, deltaTime);
+        physics(registry, deltaTime);
+
         fish_population(registry, fishModel);
         render(registry, &cam);
         if (settings.enable_menu) renderUI();
+
         glfwSwapBuffers(window);
     }
 

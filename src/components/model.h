@@ -21,12 +21,15 @@ struct model {
     uint64_t triangles; // the number of triangles
 };
 
-/**
- *
- */
-typedef glm::vec3 position;
+struct position {
+    glm::vec3 position;
+};
 
-struct instance;
+struct velocity {
+    glm::vec3 velocity;
+};
+
+struct fish {};
 
 struct camera {
 	GLfloat *fov;

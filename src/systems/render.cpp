@@ -22,7 +22,7 @@ void render(entt::registry &registry, entt::entity *cam) {
     position camPos = cameras.get<position>(*cam);
 
 	const glm::mat4 viewMatrix = glm::lookAt(
-		camPos,
+		camPos.position,
 		glm::vec3(0, 0, 0), // looking at the origin
 		glm::vec3(0, 1, 0)  // head is up
 	);
@@ -45,9 +45,9 @@ void render(entt::registry &registry, entt::entity *cam) {
         glBindVertexArray(mod.vertexArrayID);
 
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		modelMatrix[3][0] = pos.x;
-		modelMatrix[3][1] = pos.y;
-		modelMatrix[3][2] = pos.z;
+		modelMatrix[3][0] = pos.position.x;
+		modelMatrix[3][1] = pos.position.y;
+		modelMatrix[3][2] = pos.position.z;
 		glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
 		GLuint mvpID = glGetUniformLocation(mod.programID, "MVP");
 		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
