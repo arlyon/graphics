@@ -18,7 +18,7 @@ public:
     Settings(Settings const &) = delete;
     void operator=(Settings const &) = delete;
 
-    uint32_t fish = 32;
+    int32_t fish = 5;
 	GLfloat fov = 60.0f;
 	float color[3] = {0.4f, 0.8f, 1.0f};
 

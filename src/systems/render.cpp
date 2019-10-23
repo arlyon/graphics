@@ -78,6 +78,7 @@ void renderUI() {
     ImGui::Begin("Debug Menu");
 	ImGui::Checkbox("Camera Orbit", &settings.orbit);
 	ImGui::SliderFloat("Camera FOV", &settings.fov, 30.0f, 120.0f);
+	ImGui::SliderInt("Fish Count", &settings.fish, 1, 100);
     ImGui::ColorEdit3("Background Color", settings.color);
     ImGui::End();
     ImGui::Render();

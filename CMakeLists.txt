@@ -14,6 +14,7 @@ add_executable(cpp_glfw_test
         src/main.cpp
         src/systems/render.cpp src/systems/render.h
         src/systems/camera_orbit.cpp src/systems/camera_orbit.h
+        src/systems/fish_population.cpp src/systems/fish_population.h
         src/initialize.cpp src/initialize.h
         src/settings.cpp src/settings.h
         src/components/model.h

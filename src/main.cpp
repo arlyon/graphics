@@ -10,6 +10,7 @@
 #include "settings.h"
 #include "components/model.h"
 #include "../lib/tiny_obj_loader.h"
+#include "systems/fish_population.h"
 
 bool convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t>& vertices, GLuint& vertexBufferID, GLuint& vertexArrayID);
 
@@ -40,12 +41,7 @@ int main() {
         std::exit(1);
     }
 
-    struct model fishModel = {vertexBufferID, vertexArrayID, shaderProgramID, reader.GetShapes()[0].mesh.num_face_vertices.size()};
-    for (int i = 0; i < 3; i++) {
-        auto fish = registry.create();
-        registry.assign<position>(fish, i * 2, 0, 0);
-        registry.assign<model>(fish, fishModel);
-    }
+    model fishModel = {vertexBufferID, vertexArrayID, shaderProgramID, reader.GetShapes()[0].mesh.num_face_vertices.size()};
 
 	auto cam = registry.create();
 	registry.assign<position>(cam, 4, 3, 3);
@@ -60,7 +56,9 @@ int main() {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
+        /* Run Systems */
         camera_orbit(registry, deltaTime);
+        fish_population(registry, fishModel);
         render(registry, &cam);
         if (settings.enable_menu) renderUI();
         glfwSwapBuffers(window);
