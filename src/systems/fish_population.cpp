@@ -21,13 +21,12 @@ void fish_population(entt::registry &registry, model fishModel) {
         // create some (or none)
         for (int i = s.fish; i < s.fish + fishDeficit; i++) {
             auto entity = registry.create();
-            registry.assign<position>(entity, glm::vec3(i,0,0));
-            registry.assign<velocity>(entity, glm::vec3(0.5,0,0));
+            registry.assign<position>(entity, glm::vec3(i, 0, 0));
+            registry.assign<velocity>(entity, glm::vec3(0.5, 0, 0));
             registry.assign<model>(entity, fishModel);
             registry.assign<fish>(entity);
         }
-    }
-    else {
+    } else {
         // kill some
         auto fishIter = f.begin();
         for (int i = 0; i < -fishDeficit; i++) {

@@ -20,11 +20,9 @@ add_executable(cpp_glfw_test
         src/settings.cpp src/settings.h
         src/components/model.h
 
-        lib/tiny_obj_loader.h
-        lib/imgui_impl_glfw.cpp
-        lib/imgui_impl_glfw.h
-        lib/imgui_impl_opengl3.cpp
-        lib/imgui_impl_opengl3.h lib/tiny_obj_loader.cpp)
+        lib/tiny_obj_loader.cpp lib/tiny_obj_loader.h
+        lib/imgui_impl_glfw.cpp lib/imgui_impl_glfw.h
+        lib/imgui_impl_opengl3.cpp lib/imgui_impl_opengl3.h)
 
 target_compile_definitions(cpp_glfw_test PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
 target_link_libraries(cpp_glfw_test ${CONAN_LIBS})
