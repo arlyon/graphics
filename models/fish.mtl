@@ -1,5 +1,5 @@
 # Blender MTL File: 'fish.blend'
-# Material Count: 2
+# Material Count: 1
 
 newmtl Fish
 Ns 225.000000
@@ -10,15 +10,4 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd /Users/arlyon/Programming/university/graphics/modeling/textures/base.png
-
-newmtl MatEyeerial.002
-Ns 225.000000
-Ka 0.888889 0.888889 0.888889
-Kd 0.983747 0.987796 1.000000
-Ks 1.000000 1.000000 1.000000
-Ke 0.0 0.0 0.0
-Ni 1.450000
-d 1.000000
-illum 3
-map_Kd /Users/arlyon/Programming/university/graphics/modeling/textures/Eye.png
+map_Kd models/base.png

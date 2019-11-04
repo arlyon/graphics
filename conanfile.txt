@@ -4,6 +4,7 @@ glew/2.1.0@bincrafters/stable
 glm/0.9.9.5@g-truc/stable
 imgui/1.69@bincrafters/stable
 entt/3.1.1@skypjack/stable
+stb/20190512@conan/stable
 
 [generators]
 cmake

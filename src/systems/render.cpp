@@ -20,8 +20,10 @@
  * Renders all models with positions from the
  * perspective of the provided camera entity.
  */
-void render(entt::registry &registry, entt::entity *cam) {
-    glClear(GL_COLOR_BUFFER_BIT);
+void render(entt::registry &registry, entt::entity *cam, float time) {
+    auto color = Settings::getInstance().color;
+    glClearColor(color[0], color[1], color[2], 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	auto cameras = registry.view<camera, position>();
     camera camData = cameras.get<camera>(*cam);
@@ -29,7 +31,7 @@ void render(entt::registry &registry, entt::entity *cam) {
 
 	const glm::mat4 viewMatrix = glm::lookAt(
 		camPos.position,
-		glm::vec3(0, 0, 0), // looking at the origin
+		glm::vec3(1, 0, 0), // looking at the origin
 		glm::vec3(0, 1, 0)  // head is up
 	);
 
@@ -42,36 +44,18 @@ void render(entt::registry &registry, entt::entity *cam) {
 		100.0f
 	);
 
+    // todo(arlyon) instancing on fish
     auto objects = registry.view<renderable, position>();
 	for (auto object : objects) {
-	    // todo(arlyon) instancing
 		auto pos = objects.get<position>(object);
-		auto mod = objects.get<renderable>(object);
-        glUseProgram(mod.programID);
-        glBindVertexArray(mod.vertexArrayID);
-
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		modelMatrix[3][0] = pos.position.x;
-		modelMatrix[3][1] = pos.position.y;
-		modelMatrix[3][2] = pos.position.z;
-		glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
-		GLuint mvpID = glGetUniformLocation(mod.programID, "MVP");
-		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
-		glDrawArrays(GL_TRIANGLES, 0, mod.triangles * 3);
-
-        glBindVertexArray(0);
-        glUseProgram(0);
+		auto model = objects.get<renderable>(object);
+        model.render(pos, projectionMatrix, viewMatrix, time);
 	}
 
-    /* Error */
     GLenum error = glGetError();
     if (error != GL_NO_ERROR) {
-        std::cout << "Render Error: 0x";
-        std::cout << std::hex << error << std::endl;
+        std::cout << "Render Error: 0x" << std::hex << error << std::endl;
     }
-
-    auto color = Settings::getInstance().color;
-	glClearColor(color[0], color[1], color[2], 0.0f);
 }
 
 void renderUI() {
@@ -84,7 +68,7 @@ void renderUI() {
     ImGui::Begin("Debug Menu");
 	ImGui::Checkbox("Camera Orbit", &settings.orbit);
 	ImGui::SliderFloat("Camera FOV", &settings.fov, 30.0f, 120.0f);
-	ImGui::SliderInt("Fish Count", &settings.fish, 1, 100);
+	ImGui::SliderInt("Fish Count", &settings.fish, 1, 1000);
     ImGui::ColorEdit3("Background Color", settings.color);
     ImGui::End();
     ImGui::Render();

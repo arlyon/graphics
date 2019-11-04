@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <vector>
 
 #include <imgui.h>
@@ -15,10 +14,6 @@
 #include "../lib/imgui_impl_opengl3.h"
 #include "initialize.hpp"
 #include "settings.hpp"
-
-GLuint linkProgram(GLuint vertexShaderID, GLuint fragmentShaderID);
-
-GLuint compileShader(const char *shaderPath, GLuint shaderType);
 
 void GLAPIENTRY MessageCallback(GLenum source,
                 GLenum type,
@@ -49,6 +44,7 @@ GLFWwindow *initializeOpenGL() {
 
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
     if (glfwInit() != GLFW_TRUE) {
         std::cerr << "Couldn't initialize glfw" << std::endl;
@@ -56,7 +52,7 @@ GLFWwindow *initializeOpenGL() {
     }
 
     GLFWwindow *window;
-    window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
+    window = glfwCreateWindow(640, 480, "Hello Sea++", nullptr, nullptr);
     if (window == nullptr) {
         std::cerr << "Couldn't create the glfw window" << std::endl;
         glfwTerminate();
@@ -87,6 +83,10 @@ GLFWwindow *initializeOpenGL() {
 #endif
 #endif
 
+    // render fragments in the correct order
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
     return window;
 }
 
@@ -114,99 +114,9 @@ void initializeUI(GLFWwindow *window) {
 }
 
 /**
- * Initialize the shaders. Adapted from
- * https://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
- * to load all the shaders in the shaders directory.
- *
- * todo: support globbing
+ * todo(arlyon) move teardown for model to deconstructor
  */
-GLuint initializeShaders(const char *vertexShaderPath, const char *fragmentShaderPath) {
-    GLuint vertexShaderID = compileShader(vertexShaderPath, GL_VERTEX_SHADER);
-    GLuint fragmentShaderID = compileShader(fragmentShaderPath, GL_FRAGMENT_SHADER);
-    return linkProgram(vertexShaderID, fragmentShaderID);
-}
-
-GLuint compileShader(const char *shaderPath, const GLuint shaderType) {
-    GLuint shaderID = glCreateShader(shaderType);
-
-    std::string shaderCode;
-    std::ifstream shaderCodeStream(shaderPath, std::ios::in);
-    if (shaderCodeStream.is_open()) {
-        std::stringstream stringStream;
-        stringStream << shaderCodeStream.rdbuf();
-        shaderCode = stringStream.str();
-        shaderCodeStream.close();
-    } else {
-        throw "Couldn't read shader.";
-    }
-
-    char const *sourcePointer = shaderCode.c_str();
-    glShaderSource(shaderID, 1, &sourcePointer, nullptr);
-    glCompileShader(shaderID);
-
-    GLint isCompiled = 0;
-    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &isCompiled);
-    if (isCompiled == GL_FALSE) {
-        GLint maxLength = 0;
-        glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);
-
-        std::vector<GLchar> errorLog(maxLength);
-        glGetShaderInfoLog(shaderID, maxLength, &maxLength, &errorLog[0]);
-        printf("%s\n", &errorLog[0]);
-        glDeleteShader(shaderID); // Don't leak the shader.
-        throw "Couldn't compile shader.";
-    }
-
-    return shaderID;
-}
-
-GLuint linkProgram(const GLuint vertexShaderID, const GLuint fragmentShaderID) {
-    GLuint programID = glCreateProgram();
-    GLint status;
-
-    for (auto shaderID : {vertexShaderID, fragmentShaderID}) {
-        glAttachShader(programID, shaderID);
-    }
-
-    glLinkProgram(programID);
-    glGetProgramiv(programID, GL_LINK_STATUS, &status);
-    if (status == GL_FALSE) {
-        int length = 0;
-        glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &length);
-        if (length > 0) {
-            GLchar infoLog[512];
-            glGetProgramInfoLog(programID, 512, nullptr, infoLog);
-            std::cerr << infoLog;
-        }
-        std::exit(1);
-    }
-
-    for (auto shaderID : {vertexShaderID, fragmentShaderID}) {
-        glDetachShader(programID, shaderID);
-        glDeleteShader(shaderID);
-    }
-
-    glValidateProgram(programID);
-    glGetProgramiv(programID, GL_VALIDATE_STATUS, &status);
-    if (status == GL_FALSE) {
-        int length = 0;
-        glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &length);
-        if (length > 0) {
-            GLchar infoLog[512];
-            glGetProgramInfoLog(programID, 512, nullptr, infoLog);
-            std::cerr << infoLog;
-        }
-        std::exit(1);
-    }
-
-    return programID;
-}
-
-void teardown(GLuint vertexbuffer, GLuint vertexArrayId, GLuint programID) {
-    glDeleteBuffers(1, &vertexbuffer);
-    glDeleteVertexArrays(1, &vertexArrayId);
-    glDeleteProgram(programID);
-
+void teardown() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

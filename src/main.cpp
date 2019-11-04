@@ -4,16 +4,15 @@
 #include <GL/glew.h>
 #include <imgui.h>
 
-#include "systems/render.hpp"
-#include "systems/camera_orbit.hpp"
+#include "../lib/tiny_obj_loader.h"
 #include "initialize.hpp"
 #include "settings.hpp"
 #include "components/components.hpp"
-#include "../lib/tiny_obj_loader.h"
+#include "systems/camera_orbit.hpp"
+#include "systems/render.hpp"
 #include "systems/fish_population.hpp"
 #include "systems/physics.hpp"
-
-bool convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t>& vertices, GLuint& vertexBufferID, GLuint& vertexArrayID);
+#include "systems/boids.hpp"
 
 int main() {
     auto &settings = Settings::getInstance();
@@ -23,30 +22,11 @@ int main() {
     glfwSetWindowUserPointer(window, &settings); // add settings to window
     initializeUI(window);
 
-    auto reader = tinyobj::ObjReader{};
-	if (!reader.ParseFromFile("models/cube.obj")) {
-		std::cout << "Couldn't load model." << std::endl;
-		std::exit(1);
-	}
+    auto cam = registry.create();
+    registry.assign<position>(cam, glm::vec3(2, 0, 5));
+    registry.assign<camera>(cam, &settings.fov, window);
 
-    GLuint vertexBufferID, vertexArrayID;
-	if (!convertGeometry(reader.GetShapes()[0].mesh, reader.GetAttrib().vertices, vertexBufferID, vertexArrayID)) {
-	    std::cout << "Error parsing geometry. Are you only using triangles?" << std::endl;
-	}
-
-    GLuint shaderProgramID;
-    try {
-        shaderProgramID = initializeShaders("shaders/vertex_simple.glsl", "shaders/fragment_simple.glsl");
-    } catch (const char *error) {
-        std::cerr << error << std::endl;
-        std::exit(1);
-    }
-
-    renderable fishModel = {vertexBufferID, vertexArrayID, shaderProgramID, reader.GetShapes()[0].mesh.num_face_vertices.size()};
-
-	auto cam = registry.create();
-	registry.assign<position>(cam, glm::vec3(4,3,3));
-	registry.assign<camera>(cam, &settings.fov, window);
+    renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_fish.glsl");
 
     GLfloat currentTime;
     GLfloat deltaTime;
@@ -62,48 +42,14 @@ int main() {
         physics(registry, deltaTime);
 
         fish_population(registry, fishModel);
-        render(registry, &cam);
+        boids(registry);
+        render(registry, &cam, currentTime);
         if (settings.enable_menu) renderUI();
 
         glfwSwapBuffers(window);
     }
 
-    teardown(vertexBufferID, vertexArrayID, shaderProgramID);
-}
-
-/**
- * Initializes a triangle into the given vertex buffer and array.
- * 
- * Creates a buffer and sets vertexBufferID to the new value.
- * Selects the bufferand loads the vertices into it.
- * 
- * @param vertexBufferID
- * @param vertexArrayID
- */
-bool convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t> &vertices, GLuint &vertexBufferID, GLuint &vertexArrayID) {
-    for (auto vert : mesh.num_face_vertices) {
-        // only support triangles
-        if (vert != 3) return false;
-    }
-
-	std::vector<tinyobj::real_t> vec;
-	for (auto index : mesh.indices) {
-		uint8_t vertexCount = 3;
-		for (int i = 0; i < vertexCount; i++) {
-			vec.push_back(vertices[index.vertex_index * vertexCount + i]);
-		}
-	}
-
-    glGenBuffers(1, &vertexBufferID);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(tinyobj::real_t) * vec.size(), &vec.at(0), GL_STATIC_DRAW);
-
-    glGenVertexArrays(1, &vertexArrayID);
-    glBindVertexArray(vertexArrayID);
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    return true;
+    teardown();
+    fishModel.close();
 }
 

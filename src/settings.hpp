@@ -18,12 +18,13 @@ public:
     Settings(Settings const &) = delete;
     void operator=(Settings const &) = delete;
 
-    int32_t fish = 5;
-	GLfloat fov = 60.0f;
+    int32_t fish = 1;
+    float viewDistance = 20.0f;
+	float fov = 60.0f;
 	float color[3] = {0.4f, 0.8f, 1.0f};
 
     bool enable_menu = true;
-	bool orbit = true;
+	bool orbit = false;
 private:
     Settings() = default;
 };
