@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <vector>
 
 #include <imgui.h>
@@ -45,6 +44,7 @@ GLFWwindow *initializeOpenGL() {
 
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
     if (glfwInit() != GLFW_TRUE) {
         std::cerr << "Couldn't initialize glfw" << std::endl;
@@ -52,7 +52,7 @@ GLFWwindow *initializeOpenGL() {
     }
 
     GLFWwindow *window;
-    window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
+    window = glfwCreateWindow(640, 480, "Hello Sea++", nullptr, nullptr);
     if (window == nullptr) {
         std::cerr << "Couldn't create the glfw window" << std::endl;
         glfwTerminate();
@@ -82,6 +82,10 @@ GLFWwindow *initializeOpenGL() {
     glEnable(GL_DEBUG_OUTPUT);
 #endif
 #endif
+
+    // render fragments in the correct order
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     return window;
 }

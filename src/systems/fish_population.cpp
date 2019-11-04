@@ -22,7 +22,7 @@ void fish_population(entt::registry &registry, renderable fishModel) {
         for (int i = s.fish; i < s.fish + fishDeficit; i++) {
             auto entity = registry.create();
             registry.assign<position>(entity, glm::vec3(i, 0, 0));
-            registry.assign<velocity>(entity, glm::vec3(0.5, 0, 0));
+            registry.assign<velocity>(entity, glm::vec3(0, 0, 0));
             registry.assign<renderable>(entity, fishModel);
             registry.assign<fish>(entity);
         }

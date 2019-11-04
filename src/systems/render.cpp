@@ -20,8 +20,10 @@
  * Renders all models with positions from the
  * perspective of the provided camera entity.
  */
-void render(entt::registry &registry, entt::entity *cam) {
-    glClear(GL_COLOR_BUFFER_BIT);
+void render(entt::registry &registry, entt::entity *cam, float time) {
+    auto color = Settings::getInstance().color;
+    glClearColor(color[0], color[1], color[2], 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	auto cameras = registry.view<camera, position>();
     camera camData = cameras.get<camera>(*cam);
@@ -29,7 +31,7 @@ void render(entt::registry &registry, entt::entity *cam) {
 
 	const glm::mat4 viewMatrix = glm::lookAt(
 		camPos.position,
-		glm::vec3(0, 0, 0), // looking at the origin
+		glm::vec3(1, 0, 0), // looking at the origin
 		glm::vec3(0, 1, 0)  // head is up
 	);
 
@@ -42,23 +44,18 @@ void render(entt::registry &registry, entt::entity *cam) {
 		100.0f
 	);
 
+    // todo(arlyon) instancing on fish
     auto objects = registry.view<renderable, position>();
 	for (auto object : objects) {
-	    // todo(arlyon) instancing
 		auto pos = objects.get<position>(object);
-		auto mod = objects.get<renderable>(object);
-		mod.render(pos, projectionMatrix, viewMatrix);
+		auto model = objects.get<renderable>(object);
+        model.render(pos, projectionMatrix, viewMatrix, time);
 	}
 
-    /* Error */
     GLenum error = glGetError();
     if (error != GL_NO_ERROR) {
-        std::cout << "Render Error: 0x";
-        std::cout << std::hex << error << std::endl;
+        std::cout << "Render Error: 0x" << std::hex << error << std::endl;
     }
-
-    auto color = Settings::getInstance().color;
-	glClearColor(color[0], color[1], color[2], 0.0f);
 }
 
 void renderUI() {
@@ -71,7 +68,7 @@ void renderUI() {
     ImGui::Begin("Debug Menu");
 	ImGui::Checkbox("Camera Orbit", &settings.orbit);
 	ImGui::SliderFloat("Camera FOV", &settings.fov, 30.0f, 120.0f);
-	ImGui::SliderInt("Fish Count", &settings.fish, 1, 100);
+	ImGui::SliderInt("Fish Count", &settings.fish, 1, 1000);
     ImGui::ColorEdit3("Background Color", settings.color);
     ImGui::End();
     ImGui::Render();

@@ -25,7 +25,7 @@ int main() {
 	renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_fish.glsl");
 
 	auto cam = registry.create();
-	registry.assign<position>(cam, glm::vec3(4,3,3));
+	registry.assign<position>(cam, glm::vec3(2,0,5));
 	registry.assign<camera>(cam, &settings.fov, window);
 
     GLfloat currentTime;
@@ -42,7 +42,7 @@ int main() {
         physics(registry, deltaTime);
 
         fish_population(registry, fishModel);
-        render(registry, &cam);
+        render(registry, &cam, currentTime);
         if (settings.enable_menu) renderUI();
 
         glfwSwapBuffers(window);

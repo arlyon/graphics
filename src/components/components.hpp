@@ -38,7 +38,7 @@ public:
     * @return A renderable.
     */
     renderable(const std::string &model, const std::string &vertex, const std::string &fragment);
-    void render(position pos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
+    void render(position pos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time);
     void close();
 };
 

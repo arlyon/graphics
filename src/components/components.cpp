@@ -96,7 +96,6 @@ GLuint linkProgram(const GLuint vertexShaderID, const GLuint fragmentShaderID) {
 	return programID;
 }
 
-
 /**
  * Create a program from the given shaders..
  * @returns A unique ID for the program that uses the provided shaders.
@@ -243,19 +242,25 @@ renderable::renderable(const std::string& model, const std::string& vertex, cons
 	this->triangles = triangles;
 }
 
-void renderable::render(position pos, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix) {
+void renderable::render(position pos, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, float time) {
 	glUseProgram(this->shaderProgramID);
 	glBindVertexArray(this->vertexArrayID);
+	glBindTexture(GL_TEXTURE_2D, this->textureID);
 
 	glm::mat4 modelMatrix = glm::mat4(1.0f);
 	modelMatrix[3][0] = pos.position.x;
 	modelMatrix[3][1] = pos.position.y;
 	modelMatrix[3][2] = pos.position.z;
 	glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
+
 	GLuint mvpID = glGetUniformLocation(this->shaderProgramID, "MVP");
 	glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, this->triangles * 3);
 
+	// todo(arlyon) only set time once
+	GLuint timeID = glGetUniformLocation(this->shaderProgramID, "time");
+	glUniform1f(timeID, time);
+
+	glDrawArrays(GL_TRIANGLES, 0, this->triangles * 3);
 	glBindVertexArray(0);
 	glUseProgram(0);
 }
