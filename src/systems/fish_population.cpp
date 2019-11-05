@@ -2,9 +2,9 @@
 // Created by Alexander Lyon on 2019-10-23.
 //
 
-#include "fish_population.h"
-#include "../settings.h"
-#include "../components/components.h"
+#include "fish_population.hpp"
+#include "../settings.hpp"
+#include "../components/components.hpp"
 
 /**
  * Handles the spawning and despawning of fish,
