@@ -56,7 +56,7 @@ vec3 swim(vec3 worldSpace) {
 
 vec3 translate(vec3 worldSpace) {
     float loc = sin(time * (3 * PI) / 2) * 0.3;
-    return vec3(pow(loc, 0.77) / 6 * sign(loc), 0, 0);
+    return vec3(pow(abs(loc), 0.77) / 6 * sign(loc), 0, 0);
 }
 
 void main()
