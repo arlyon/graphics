@@ -24,14 +24,22 @@ struct position {
  * A model to be rendered by OpenGL
  */
 class renderable {
-public:
     GLuint vertexBufferID; // the vertex buffer for this model
     GLuint vertexArrayID; // the vertex array for this model
     GLuint shaderProgramID; // the program to use when rendering this model
+    GLuint textureID; // the texture ID to use when rendering this model
     uint64_t triangles; // the number of triangles
-	renderable(const std::string& model, const std::string& vertex, const std::string& fragment);
-	void renderable::render(position pos, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix);
-	void renderable::close();
+public:
+    /**
+    * Creates a renderable from a given obj, vertex shader, and fragment shader.
+    * @param model The path to the model to use the renderable with.
+    * @param vertex The path to the vertex shader to use.
+    * @param fragment The path to the fragment shader to use.
+    * @return A renderable.
+    */
+    renderable(const std::string &model, const std::string &vertex, const std::string &fragment);
+    void render(position pos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
+    void close();
 };
 
 /**
