@@ -28,7 +28,6 @@ void GLAPIENTRY MessageCallback(GLenum source,
 }
 
 GLFWwindow *initializeOpenGL() {
-    glewExperimental = GL_TRUE;
     if (glfwInit() != GLFW_TRUE) {
         std::cerr << "Couldn't initialize glfw" << std::endl;
         std::exit(-1);
@@ -39,7 +38,7 @@ GLFWwindow *initializeOpenGL() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 #else
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 #endif
 
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -94,11 +93,9 @@ void initializeUI(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
 
 #if __APPLE__
-    // GL 3.2 + GLSL 150
     const char *glsl_version = "#version 410";
 #else
-    // GL 3.0 + GLSL 130
-    const char *glsl_version = "#version 130";
+    const char *glsl_version = "#version 430";
 #endif
 
     ImGui::CreateContext();
@@ -107,8 +104,8 @@ void initializeUI(GLFWwindow *window) {
 
     glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
-            auto *settings = static_cast<Settings *>(glfwGetWindowUserPointer(window));
-            settings->enable_menu = !settings->enable_menu;
+            auto &settings = Settings::getInstance();
+            settings.enable_menu = !settings.enable_menu;
         }
     });
 }

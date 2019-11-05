@@ -19,7 +19,6 @@ int main() {
     auto registry = entt::registry{};
 
     auto *window = initializeOpenGL();
-    glfwSetWindowUserPointer(window, &settings); // add settings to window
     initializeUI(window);
 
 	renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_fish.glsl");
