@@ -163,48 +163,50 @@ loadGeometry(const tinyobj::ObjReader& reader, GLuint& vertexBufferID, GLuint& v
 	return true;
 }
 
-bool loadTextures(const tinyobj::ObjReader& reader, std::map<std::string, GLuint>& textures) {
-	auto materials = reader.GetMaterials();
+bool loadTextures(const tinyobj::ObjReader &reader, std::map<std::string, GLuint> &textures) {
+    auto materials = reader.GetMaterials();
 
-	for (auto& material : materials) {
-		// Only load the texture if it is not already loaded
-		if (material.diffuse_texname.length() == 0) continue;
-		if (textures.find(material.diffuse_texname) != textures.end()) continue;
+    for (auto &material : materials) {
+        // Only load the texture if it is not already loaded
+        if (material.diffuse_texname.length() == 0) continue;
+        if (textures.find(material.diffuse_texname) != textures.end()) continue;
 
-		GLuint texture_id;
-		glGenTextures(1, &texture_id);
-		glBindTexture(GL_TEXTURE_2D, texture_id);
+        GLuint texture_id;
+        glGenTextures(1, &texture_id);
+        glBindTexture(GL_TEXTURE_2D, texture_id);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		int components;
-		int image_width, image_height;
-		uint8_t* image = stbi_load(material.diffuse_texname.c_str(), &image_width, &image_height, &components, STBI_default);
-		if (!image) {
-			std::cerr << "Unable to load texture: " << material.diffuse_texname << std::endl;
-			exit(1);
-		}
-		else {
-			std::cout << "Loaded texture " << texture_id << ": " << material.diffuse_texname << std::endl;
-		}
+        int components;
+        int image_width, image_height;
+        uint8_t *image = stbi_load(material.diffuse_texname.c_str(), &image_width, &image_height, &components, STBI_default);
+        if (!image) {
+            std::cerr << "Unable to load texture: " << material.diffuse_texname << std::endl;
+            exit(1);
+        } else {
+            std::cout << "Loaded texture " << texture_id << ": " << material.diffuse_texname << std::endl;
+        }
 
-		if (components == 3)
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_width, image_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-		else if (components == 4)
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-		else return false;
+        if (components == 3)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_width, image_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+        else if (components == 4)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        else {
+            std::cerr << "Unable to load texture with " << components << " components: " << material.diffuse_texname << std::endl;
+            exit(1);
+        }
 
-		glGenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		stbi_image_free(image);
-		textures.insert(std::make_pair(material.diffuse_texname, texture_id));
-	}
+        glBindTexture(GL_TEXTURE_2D, 0);
+        stbi_image_free(image);
+        textures.insert(std::make_pair(material.diffuse_texname, texture_id));
+    }
 
-	return true;
+    return true;
 }
 
 renderable::renderable(const std::string& model, const std::string& vertex, const std::string& fragment) {
@@ -253,8 +255,8 @@ void renderable::render(position pos, const glm::mat4& projectionMatrix, const g
 	modelMatrix[3][2] = pos.position.z;
 	glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
 
-	GLuint mvpID = glGetUniformLocation(this->shaderProgramID, "MVP");
-	glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
+    GLuint mvpID = glGetUniformLocation(this->shaderProgramID, "mvp");
+    glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
 
 	// todo(arlyon) only set time once
 	GLuint timeID = glGetUniformLocation(this->shaderProgramID, "time");
