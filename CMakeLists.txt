@@ -18,7 +18,7 @@ add_executable(cpp_glfw_test
         src/systems/fish_population.cpp src/systems/fish_population.hpp
         src/initialize.cpp src/initialize.hpp
         src/settings.cpp src/settings.hpp
-        src/components/components.hpp
+        src/components/components.cpp src/components/components.hpp
 
         lib/tiny_obj_loader.cpp lib/tiny_obj_loader.h
         lib/imgui_impl_glfw.cpp lib/imgui_impl_glfw.h
