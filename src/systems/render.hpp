@@ -7,5 +7,6 @@
 #include <entt/entt.hpp>
 
 void render(entt::registry &registry, entt::entity *cam, float time);
+
 void renderUI();
 

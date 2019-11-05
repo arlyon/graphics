@@ -25,32 +25,32 @@ void render(entt::registry &registry, entt::entity *cam, float time) {
     glClearColor(color[0], color[1], color[2], 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	auto cameras = registry.view<camera, position>();
+    auto cameras = registry.view<camera, position>();
     camera camData = cameras.get<camera>(*cam);
     position camPos = cameras.get<position>(*cam);
 
-	const glm::mat4 viewMatrix = glm::lookAt(
-		camPos.position,
-		glm::vec3(1, 0, 0), // looking at the origin
-		glm::vec3(0, 1, 0)  // head is up
-	);
+    const glm::mat4 viewMatrix = glm::lookAt(
+            camPos.position,
+            glm::vec3(1, 0, 0), // looking at the origin
+            glm::vec3(0, 1, 0)  // head is up
+    );
 
-	int width, height;
+    int width, height;
     glfwGetWindowSize(camData.window, &width, &height);
-	const glm::mat4 projectionMatrix = glm::perspective(
-		glm::radians(*camData.fov),
-        (float)width / height,
-		0.1f,
-		100.0f
-	);
+    const glm::mat4 projectionMatrix = glm::perspective(
+            glm::radians(*camData.fov),
+            (float) width / height,
+            0.1f,
+            1000.0f
+    );
 
     // todo(arlyon) instancing on fish
     auto objects = registry.view<renderable, position>();
-	for (auto object : objects) {
-		auto pos = objects.get<position>(object);
-		auto model = objects.get<renderable>(object);
+    for (auto object : objects) {
+        auto pos = objects.get<position>(object);
+        auto model = objects.get<renderable>(object);
         model.render(pos, projectionMatrix, viewMatrix, time);
-	}
+    }
 
     GLenum error = glGetError();
     if (error != GL_NO_ERROR) {
@@ -59,16 +59,16 @@ void render(entt::registry &registry, entt::entity *cam, float time) {
 }
 
 void renderUI() {
-	auto& settings = Settings::getInstance();
+    auto &settings = Settings::getInstance();
 
     /* DearImGui */
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     ImGui::Begin("Debug Menu");
-	ImGui::Checkbox("Camera Orbit", &settings.orbit);
-	ImGui::SliderFloat("Camera FOV", &settings.fov, 30.0f, 120.0f);
-	ImGui::SliderInt("Fish Count", &settings.fish, 1, 1000);
+    ImGui::Checkbox("Camera Orbit", &settings.orbit);
+    ImGui::SliderFloat("Camera FOV", &settings.fov, 30.0f, 120.0f);
+    ImGui::SliderInt("Fish Count", &settings.fish, 1, 1000);
     ImGui::ColorEdit3("Background Color", settings.color);
     ImGui::End();
     ImGui::Render();

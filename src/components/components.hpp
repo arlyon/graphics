@@ -17,7 +17,7 @@
  * position and a model are rendered to the screen.
  */
 struct position {
-	glm::vec3 position;
+    glm::vec3 position;
 };
 
 /**
@@ -38,7 +38,9 @@ public:
     * @return A renderable.
     */
     renderable(const std::string &model, const std::string &vertex, const std::string &fragment);
+
     void render(position pos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time);
+
     void close();
 };
 
@@ -54,7 +56,8 @@ struct velocity {
  * A marker for the fish population manager to show
  * that the entity is a fish managed by it.
  */
-struct fish {};
+struct fish {
+};
 
 /**
  * A camera through which the world is rendered.

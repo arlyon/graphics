@@ -21,11 +21,11 @@ int main() {
     auto *window = initializeOpenGL();
     initializeUI(window);
 
-	renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_fish.glsl");
+    renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_fish.glsl");
 
-	auto cam = registry.create();
-	registry.assign<position>(cam, glm::vec3(2,0,5));
-	registry.assign<camera>(cam, &settings.fov, window);
+    auto cam = registry.create();
+    registry.assign<position>(cam, glm::vec3(2, 0, 5));
+    registry.assign<camera>(cam, &settings.fov, window);
 
     GLfloat currentTime;
     GLfloat deltaTime;
@@ -48,6 +48,6 @@ int main() {
     }
 
     teardown();
-	fishModel.close();
+    fishModel.close();
 }
 
