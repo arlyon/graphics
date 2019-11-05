@@ -8,7 +8,8 @@
 #include "systems/camera_orbit.hpp"
 #include "settings.hpp"
 #include "components/components.hpp"
-#include "../lib/tiny_obj_loader.h"
+#include "systems/camera_orbit.hpp"
+#include "systems/render.hpp"
 #include "systems/fish_population.hpp"
 #include "systems/physics.hpp"
 #include "initialize.hpp"
@@ -21,7 +22,7 @@ int main() {
     glfwSetWindowUserPointer(window, &settings); // add settings to window
     initializeUI(window);
 
-	renderable fishModel = renderable("models/fish.obj", "shaders/vertex_simple.glsl", "shaders/fragment_simple.glsl");
+	renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_fish.glsl");
 
 	auto cam = registry.create();
 	registry.assign<position>(cam, glm::vec3(4,3,3));
