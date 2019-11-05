@@ -21,6 +21,7 @@
 #include "systems/entity_control.hpp"
 #include "systems/fish_population.hpp"
 #include "systems/physics.hpp"
+#include "systems/boids.hpp"
 
 int main() {
     auto &settings = Settings::getInstance();
@@ -51,8 +52,9 @@ int main() {
 
         /* Run Systems */
         physics(registry, deltaTime);
-
         fish_population(registry, fishModel);
+		boids(registry);
+
         render(registry, &cam, currentTime);
         if (settings.enable_menu) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
