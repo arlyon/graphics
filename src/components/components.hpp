@@ -13,21 +13,22 @@
 #include "../../lib/tiny_obj_loader.h"
 
 /**
- * A model to be rendered by OpenGL
- */
-struct renderable {
-    GLuint vertexBufferID; // the vertex buffer for this model
-    GLuint vertexArrayID; // the vertex array for this model
-    GLuint programID; // the program to use when rendering this model
-    uint64_t triangles; // the number of triangles
-};
-
-/**
  * Some physical object with a position. Entities with a
  * position and a model are rendered to the screen.
  */
 struct position {
-    glm::vec3 position;
+	glm::vec3 position;
+};
+
+/**
+ * A model to be rendered by OpenGL
+ */
+class renderable {
+public:
+    GLuint vertexBufferID; // the vertex buffer for this model
+    GLuint vertexArrayID; // the vertex array for this model
+    GLuint shaderProgramID; // the program to use when rendering this model
+    uint64_t triangles; // the number of triangles
 };
 
 /**
