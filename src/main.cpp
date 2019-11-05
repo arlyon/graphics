@@ -21,7 +21,7 @@ int main() {
     glfwSetWindowUserPointer(window, &settings); // add settings to window
     initializeUI(window);
 
-	renderable fishModel = renderable("models/cube.obj", "shaders/vertex_simple.glsl", "shaders/fragment_simple.glsl");
+	renderable fishModel = renderable("models/fish.obj", "shaders/vertex_simple.glsl", "shaders/fragment_simple.glsl");
 
 	auto cam = registry.create();
 	registry.assign<position>(cam, glm::vec3(4,3,3));

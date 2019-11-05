@@ -109,22 +109,37 @@ GLuint loadShaders(const std::string& vertexShaderPath, const std::string& fragm
  * Initializes a triangle into the given vertex buffer and array.
  *
  * Creates a buffer and sets vertexBufferID to the new value.
- * Selects the bufferand loads the vertices into it.
+ * Selects the buffer and loads the vertices into it.
  *
  * @param vertexBufferID
  * @param vertexArrayID
+ * @param triangles A pointer to place the number of triangles into.
  */
-bool convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t>& vertices, GLuint& vertexBufferID, GLuint& vertexArrayID) {
-	for (auto vert : mesh.num_face_vertices) {
-		// only support triangles
-		if (vert != 3) return false;
+bool
+loadGeometry(const tinyobj::ObjReader& reader, GLuint& vertexBufferID, GLuint& vertexArrayID, GLuint& triangles) {
+	// only support triangles
+	const uint8_t faceSides = 3;
+
+	triangles = 0;
+	for (const auto& shape : reader.GetShapes()) {
+		triangles += shape.mesh.num_face_vertices.size();
+		for (auto vert : shape.mesh.num_face_vertices) {
+			if (vert != faceSides) return false;
+		}
 	}
 
 	std::vector<tinyobj::real_t> vec;
-	for (auto index : mesh.indices) {
-		uint8_t vertexCount = 3;
-		for (int i = 0; i < vertexCount; i++) {
-			vec.push_back(vertices[index.vertex_index * vertexCount + i]);
+	auto vertices = reader.GetAttrib().vertices;
+	auto normals = reader.GetAttrib().normals;
+	auto texcoords = reader.GetAttrib().texcoords;
+	for (const auto& shape : reader.GetShapes()) {
+		for (auto index : shape.mesh.indices) {
+			for (int i = 0; i < faceSides; i++) vec.push_back(vertices[index.vertex_index * 3 + i]);
+			for (int i = 0; i < faceSides; i++) vec.push_back(normals[index.normal_index * 3 + i]);
+
+			//texture coordinates with inverted Y
+			vec.push_back(texcoords[index.texcoord_index * 2]);
+			vec.push_back(1.0f - texcoords[index.texcoord_index * 2 + 1]);
 		}
 	}
 
@@ -136,7 +151,13 @@ bool convertGeometry(tinyobj::mesh_t mesh, const std::vector<tinyobj::real_t>& v
 	glBindVertexArray(vertexArrayID);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (2 * faceSides + 2) * sizeof(float), nullptr);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (2 * faceSides + 2) * sizeof(float), (void*)(faceSides * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (2 * faceSides + 2) * sizeof(float), (void*)(2 * faceSides * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	return true;
 }
@@ -148,10 +169,10 @@ renderable::renderable(const std::string& model, const std::string& vertex, cons
 		std::exit(1);
 	}
 
-	GLuint vertexBufferID, vertexArrayID;
-	GLuint triangles = reader.GetShapes()[0].mesh.num_face_vertices.size();
-	if (!convertGeometry(reader.GetShapes()[0].mesh, reader.GetAttrib().vertices, vertexBufferID, vertexArrayID)) {
-		std::cout << "Error parsing geometry. Are you only using triangles?" << std::endl;
+	GLuint vertexBufferID, vertexArrayID, triangles = 0;
+	if (!loadGeometry(reader, vertexBufferID, vertexArrayID, triangles)) {
+		std::cerr << "Error parsing geometry for " << model << ". Are you only using triangles?" << std::endl;
+		std::exit(1);
 	}
 
 	GLuint shaderProgramID;
