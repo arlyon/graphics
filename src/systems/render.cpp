@@ -47,20 +47,7 @@ void render(entt::registry &registry, entt::entity *cam) {
 	    // todo(arlyon) instancing
 		auto pos = objects.get<position>(object);
 		auto mod = objects.get<renderable>(object);
-        glUseProgram(mod.shaderProgramID);
-        glBindVertexArray(mod.vertexArrayID);
-
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		modelMatrix[3][0] = pos.position.x;
-		modelMatrix[3][1] = pos.position.y;
-		modelMatrix[3][2] = pos.position.z;
-		glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
-		GLuint mvpID = glGetUniformLocation(mod.shaderProgramID, "MVP");
-		glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
-		glDrawArrays(GL_TRIANGLES, 0, mod.triangles * 3);
-
-        glBindVertexArray(0);
-        glUseProgram(0);
+		mod.render(pos, projectionMatrix, viewMatrix);
 	}
 
     /* Error */

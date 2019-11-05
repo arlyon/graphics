@@ -30,6 +30,7 @@ public:
     GLuint shaderProgramID; // the program to use when rendering this model
     uint64_t triangles; // the number of triangles
 	renderable(const std::string& model, const std::string& vertex, const std::string& fragment);
+	void renderable::render(position pos, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix);
 	void renderable::close();
 };
 

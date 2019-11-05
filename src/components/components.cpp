@@ -168,6 +168,24 @@ renderable::renderable(const std::string& model, const std::string& vertex, cons
 	this->shaderProgramID = shaderProgramID;
 	this->triangles = triangles;
 }
+
+void renderable::render(position pos, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix) {
+	glUseProgram(this->shaderProgramID);
+	glBindVertexArray(this->vertexArrayID);
+
+	glm::mat4 modelMatrix = glm::mat4(1.0f);
+	modelMatrix[3][0] = pos.position.x;
+	modelMatrix[3][1] = pos.position.y;
+	modelMatrix[3][2] = pos.position.z;
+	glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
+	GLuint mvpID = glGetUniformLocation(this->shaderProgramID, "MVP");
+	glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, this->triangles * 3);
+
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
 void renderable::close() {
 	glDeleteBuffers(1, &this->vertexBufferID);
 	glDeleteVertexArrays(1, &this->vertexArrayID);
