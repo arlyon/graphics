@@ -109,11 +109,7 @@ void initializeUI(GLFWwindow *window) {
     });
 }
 
-void teardown(GLuint vertexbuffer, GLuint vertexArrayId, GLuint programID) {
-    glDeleteBuffers(1, &vertexbuffer);
-    glDeleteVertexArrays(1, &vertexArrayId);
-    glDeleteProgram(programID);
-
+void teardown() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

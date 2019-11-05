@@ -168,3 +168,8 @@ renderable::renderable(const std::string& model, const std::string& vertex, cons
 	this->shaderProgramID = shaderProgramID;
 	this->triangles = triangles;
 }
+void renderable::close() {
+	glDeleteBuffers(1, &this->vertexBufferID);
+	glDeleteVertexArrays(1, &this->vertexArrayID);
+	glDeleteProgram(shaderProgramID);
+}

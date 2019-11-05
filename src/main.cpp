@@ -47,6 +47,7 @@ int main() {
         glfwSwapBuffers(window);
     }
 
-    //teardown(vertexBufferID, vertexArrayID, shaderProgramID);
+    teardown();
+	fishModel.close();
 }
 
