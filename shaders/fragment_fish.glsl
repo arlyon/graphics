@@ -9,7 +9,7 @@ out vec4 color;
 uniform sampler2D textureImage;
 uniform vec3 cameraPos;
 uniform vec3 lightDir = vec3(0, 1, 0);
-uniform float ambientStrength = 0.3;
+uniform float ambientStrength = 0.6;
 uniform float hueShiftAmount = 0.0;
 
 #define PI 3.14
@@ -43,7 +43,7 @@ void main()
     vec3 albedo = hueShift(texture(textureImage, texcoord).rgb, hueShiftAmount * PI * 2);
 
     // calculate ambient contribution
-    vec3 ambientColor = vec3(1.0, 1.0, 1.0);
+    vec3 ambientColor = vec3(0.4, 0.7, 0.9);
     vec3 ambient = ambientStrength * ambientColor * albedo;
 
     // calculate diffuse contribution
@@ -56,7 +56,7 @@ void main()
     vec3 viewDir = normalize(cameraPos - position);
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
-    vec3 specular = vec3(0.3) * spec;
+    vec3 specular = vec3(0.3, 0.5, 0.6) * spec;
 
     color = vec4(ambient + diffuse + specular, 1.0);
 }

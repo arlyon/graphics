@@ -1,7 +1,17 @@
+/**
+ * Right handed system,
+ * glm::vec3(x, y, z) where:
+ *   - x+ is right
+ *   - y+ is up
+ *   - z+ is out of the screen
+ */
+
 #include <iostream>
 #include <variant>
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <imgui.h>
 
 #include "systems/render.hpp"
@@ -24,7 +34,7 @@ int main() {
     renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_fish.glsl");
 
     auto cam = registry.create();
-    registry.assign<position>(cam, glm::vec3(2, 0, 5));
+    registry.assign<position>(cam, glm::vec3(0,0,5), glm::quatLookAt(glm::vec3(0,0,-1), glm::vec3(0,1,0))); // raised slightly, and moved back toward the screen, looking at the origin
     registry.assign<camera>(cam, &settings.fov, window);
 
     GLfloat currentTime;

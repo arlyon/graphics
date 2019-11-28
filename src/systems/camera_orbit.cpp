@@ -25,8 +25,6 @@ void camera_orbit(entt::registry &registry, GLfloat deltaTime) {
 
     for (auto cam : cameras) {
         auto &pos = cameras.get<position>(cam);
-
-        pos.position.x = 5 * glm::sin(rotateTime);
-        pos.position.y = 5 * glm::cos(rotateTime);
+        pos.position = s.camPos;
     }
 }

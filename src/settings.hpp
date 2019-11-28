@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
 
 class Settings {
 public:
@@ -25,6 +26,7 @@ public:
 
     bool enable_menu = true;
     bool orbit = false;
+    glm::vec3 camPos;
 private:
     Settings() = default;
 };

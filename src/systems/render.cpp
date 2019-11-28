@@ -62,8 +62,12 @@ void renderUI() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     ImGui::Begin("Debug Menu");
-    ImGui::Checkbox("Camera Orbit", &settings.orbit);
-    ImGui::SliderFloat("Camera FOV", &settings.fov, 30.0f, 120.0f);
+    ImGui::Text("Camera Settings");
+    ImGui::Checkbox("Manual Position", &settings.orbit);
+    ImGui::SliderFloat3("Position", (float *)&settings.camPos, -10.0, 10.0);
+    ImGui::SliderFloat("FOV", &settings.fov, 30.0f, 120.0f);
+    ImGui::Separator();
+    ImGui::Text("Scene Settings");
     ImGui::SliderInt("Fish Count", &settings.fish, 1, 1000);
     ImGui::ColorEdit3("Background Color", settings.color);
     ImGui::End();
