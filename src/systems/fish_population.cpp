@@ -6,6 +6,8 @@
 #include "../settings.hpp"
 #include "../components/components.hpp"
 
+#include "glm/gtc/quaternion.hpp"
+
 /**
  * Handles the spawning and despawning of fish,
  * according to the value specified in the settings.
@@ -21,7 +23,7 @@ void fish_population(entt::registry &registry, renderable fishModel) {
         // create some (or none)
         for (int i = s.fish; i < s.fish + fishDeficit; i++) {
             auto entity = registry.create();
-            registry.assign<position>(entity, glm::vec3(i, 0, 0));
+            registry.assign<position>(entity, glm::vec3(i, 0, 0), glm::quatLookAt(glm::vec3(1, 0, 0), glm::vec3(0, 1, 0)));
             registry.assign<velocity>(entity, glm::vec3(0, 0, 0));
             registry.assign<renderable>(entity, fishModel);
             registry.assign<fish>(entity);

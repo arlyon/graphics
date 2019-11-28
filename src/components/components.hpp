@@ -8,6 +8,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <GLFW/glfw3.h>
 
 #include "../../lib/tiny_obj_loader.h"
@@ -18,6 +19,7 @@
  */
 struct position {
     glm::vec3 position;
+    glm::quat rotation;
 };
 
 /**
@@ -39,7 +41,7 @@ public:
     */
     renderable(const std::string &model, const std::string &vertex, const std::string &fragment);
 
-    void render(position pos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time);
+    void render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time);
 
     void close();
 };

@@ -29,11 +29,7 @@ void render(entt::registry &registry, entt::entity *cam, float time) {
     camera camData = cameras.get<camera>(*cam);
     position camPos = cameras.get<position>(*cam);
 
-    const glm::mat4 viewMatrix = glm::lookAt(
-            camPos.position,
-            glm::vec3(1, 0, 0), // looking at the origin
-            glm::vec3(0, 1, 0)  // head is up
-    );
+    const glm::mat4 viewMatrix = glm::translate(glm::mat4(1.0), -camPos.position) * glm::mat4_cast(camPos.rotation);
 
     int width, height;
     glfwGetWindowSize(camData.window, &width, &height);
@@ -47,9 +43,9 @@ void render(entt::registry &registry, entt::entity *cam, float time) {
     // todo(arlyon) instancing on fish
     auto objects = registry.view<renderable, position>();
     for (auto object : objects) {
-        auto pos = objects.get<position>(object);
+        auto objPos = objects.get<position>(object);
         auto model = objects.get<renderable>(object);
-        model.render(pos, projectionMatrix, viewMatrix, time);
+        model.render(objPos, camPos, projectionMatrix, viewMatrix, time);
     }
 
     GLenum error = glGetError();

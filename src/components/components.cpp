@@ -5,6 +5,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stb_image.h>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "components.hpp"
 
@@ -248,15 +250,12 @@ renderable::renderable(const std::string &model, const std::string &vertex, cons
     this->triangles = triangles;
 }
 
-void renderable::render(position pos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time) {
+void renderable::render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time) {
     glUseProgram(this->shaderProgramID);
     glBindVertexArray(this->vertexArrayID);
     glBindTexture(GL_TEXTURE_2D, this->textureID);
 
-    glm::mat4 modelMatrix = glm::mat4(1.0f);
-    modelMatrix[3][0] = pos.position.x;
-    modelMatrix[3][1] = pos.position.y;
-    modelMatrix[3][2] = pos.position.z;
+    glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), objPos.position) * glm::mat4_cast(objPos.rotation);
     glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
 
     GLuint mvpID = glGetUniformLocation(this->shaderProgramID, "mvp");
@@ -265,6 +264,9 @@ void renderable::render(position pos, const glm::mat4 &projectionMatrix, const g
     // todo(arlyon) only set time once
     GLuint timeID = glGetUniformLocation(this->shaderProgramID, "time");
     glUniform1f(timeID, time);
+
+    GLuint cameraPosID = glGetUniformLocation(this->shaderProgramID, "cameraPos");
+    glUniform3fv(cameraPosID, 1, glm::value_ptr(camPos.position));
 
     glDrawArrays(GL_TRIANGLES, 0, this->triangles * 3);
     glBindVertexArray(0);
