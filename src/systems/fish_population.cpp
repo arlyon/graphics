@@ -23,12 +23,12 @@ void fish_population(entt::registry &registry, renderable fishModel) {
     int64_t fishDeficit = s.fish - f.size();
     if (fishDeficit >= 0) {
         // create some (or none)
-        for (int i = s.fish; i < s.fish + fishDeficit; i++) {
+        for (int i = 0; i < fishDeficit; i++) {
             auto entity = registry.create();
             registry.assign<position>(entity, glm::vec3(i, 0, 0), glm::quatLookAt(glm::vec3(0,0,-1), glm::vec3(0, 1, 0)));
-            registry.assign<velocity>(entity, glm::vec3(0, 0, 0));
+            registry.assign<velocity>(entity, glm::vec3(0, 0, -5));
             registry.assign<renderable>(entity, fishModel);
-            registry.assign<fish>(entity);
+            registry.assign<fish>(entity, i % 5);
         }
     } else {
         // kill some

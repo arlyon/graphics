@@ -6,38 +6,67 @@
 #include "../components/components.hpp"
 #include "../util/octree.hpp"
 
+#define N_NEAREST 20
+#define MIN_DISTANCE 3
+
 /**
- * Boids try to fly towards the centre of mass of neighbouring boids.
- *
- * todo(arlyon) Implement sight so that boids move where they can see
+ * Rule 1: Boids want to move towards the centre of mass of neighbouring boids.
  */
-glm::vec3 rule1(entt::registry &registry, entt::entity &entity, octree *tree) {
-    auto ourFish = registry.view<fish, position>().get<position>(entity);
-    registry.sort<position>([ourFish](auto &lhs, auto &rhs) {
-        return (ourFish.position - lhs.position).length() < (ourFish.position - rhs.position).length();
-    });
+glm::vec3 rule1(entt::basic_view<entt::entity, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
+    auto ourPosition = sortedFish.get<position>(ourEntity);
 
-    auto sortedFish = registry.view<position, fish>();
+    uint8_t c = 0;
+    glm::vec3 direction = {};
+    for (auto& entity : sortedFish) {
+        if (c == 0) { c++; continue; } // the fish should ignore itself
+        if (sortedFish.get<fish>(entity).getGroup() != sortedFish.get<fish>(ourEntity).getGroup()) continue; // the fish should only group with its own group
+        direction += sortedFish.get<position>(entity).position;
+        if (++c == N_NEAREST) break;
+    }
 
-
-
-    return glm::vec3{};
+    // move 1% towards the center
+    return (direction / (float)c - ourPosition.position) / 100.0f;
 }
 
 /**
  * Rule 2: Boids try to keep a small distance away from other objects (including other boids).
+ *
+ * todo(arlyon) smoothen out boids
  */
-glm::vec3 rule2(entt::registry &registry, entt::entity &entity, octree *tree) {
-    return glm::vec3{};
+glm::vec3 rule2(entt::basic_view<entt::entity, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
+    auto ourPosition = sortedFish.get<position>(ourEntity);
 
+    uint8_t c = 0;
+    glm::vec3 direction = {};
+    for (auto& entity : sortedFish) {
+        if (c == 0) { c++; continue; } // the fish should ignore itself
+        auto entPos = sortedFish.get<position>(entity);
+        auto distance = ourPosition.position - entPos.position;
+        if (glm::length(distance) < MIN_DISTANCE) {
+            direction += distance;
+        }
+        if (++c == N_NEAREST) break;
+    }
+
+    // move away from all nearby boids
+    return direction;
 }
 
 /**
  * Rule 3: Boids try to match velocity with near boids.
  */
-glm::vec3 rule3(entt::registry &registry, entt::entity &entity, octree *tree) {
-    return glm::vec3{};
+glm::vec3 rule3(entt::basic_view<entt::entity, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
+    auto ourVelocity = sortedFish.get<velocity>(ourEntity);
 
+    uint8_t c = 0;
+    glm::vec3 perceived_velocity = {};
+    for (auto& entity : sortedFish) {
+        if (c == 0) { c++; continue; } // the fish should ignore itself
+        perceived_velocity += sortedFish.get<velocity>(entity).velocity;
+        if (++c == N_NEAREST) break;
+    }
+
+    return (perceived_velocity / (float)c - ourVelocity.velocity) / 8.0f;
 }
 
 /**
@@ -46,16 +75,16 @@ glm::vec3 rule3(entt::registry &registry, entt::entity &entity, octree *tree) {
  * http://www.kfish.org/boids/pseudocode.html
  */
 void boids(entt::registry &registry) {
-    auto allFish = registry.view<fish, velocity, position>();
+    auto allEntities = registry.view<fish, velocity, position>();
+    for (auto ourEntity : allEntities) {
+        auto ourPosition = allEntities.get<position>(ourEntity);
+        registry.sort<position>([ourPosition](auto &lhs, auto &rhs) {
+            return (ourPosition.position - lhs.position).length() < (ourPosition.position - rhs.position).length();
+        });
+        auto sortedFish = registry.view<position, velocity, fish>();
 
-    auto origin = glm::vec3();
-    auto tree = new octree(&origin, 5000);
-    for (auto entity : allFish) {
-        tree->add(entity, allFish.get<position>(entity));
-    }
-
-    for (auto entity : allFish) {
-        auto &vel = allFish.get<velocity>(entity);
-        vel.velocity += rule1(registry, entity, tree) + rule2(registry, entity, tree) + rule3(registry, entity, tree);
+        auto &ourVelocity = allEntities.get<velocity>(ourEntity);
+        auto direction = rule1(sortedFish, ourEntity) + rule2(sortedFish, ourEntity) + rule3(sortedFish, ourEntity);
+        ourVelocity.velocity += direction;
     }
 }

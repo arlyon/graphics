@@ -278,3 +278,9 @@ void renderable::close() {
     glDeleteVertexArrays(1, &this->vertexArrayID);
     glDeleteProgram(shaderProgramID);
 }
+
+fish::fish(uint8_t group) {
+    this->group = group;
+    this->timeOffset = random();
+    this->hueShift = (float)(group % 20) / 20.0;
+}

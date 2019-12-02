@@ -58,7 +58,15 @@ struct velocity {
  * A marker for the fish population manager to show
  * that the entity is a fish managed by it.
  */
-struct fish {
+class fish {
+    uint8_t group;
+    float timeOffset;
+    float hueShift;
+public:
+    fish(uint8_t group);
+    float getHueShift() const {return this->hueShift;}
+    uint8_t getGroup() const {return this->group;}
+    float getTimeOffset() const {return this->timeOffset;}
 };
 
 /**
