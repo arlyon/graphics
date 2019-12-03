@@ -4,7 +4,6 @@
 
 #include "boids.hpp"
 #include "../components/components.hpp"
-#include "../util/octree.hpp"
 
 #define N_NEAREST 20
 #define MIN_DISTANCE 3
