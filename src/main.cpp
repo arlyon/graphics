@@ -39,9 +39,9 @@ int main() {
     registry.assign<velocity>(cam, glm::vec3(0,0,0));
     registry.assign<camera>(cam, &settings.fov, window);
 
-    GLfloat currentTime;
-    GLfloat deltaTime;
-    GLfloat lastTime = 0.0;
+    double currentTime;
+    double deltaTime;
+    double lastTime = 0.0;
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();

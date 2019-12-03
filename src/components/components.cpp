@@ -120,13 +120,13 @@ GLuint loadShaders(const std::string &vertexShaderPath, const std::string &fragm
  * @param triangles A pointer to place the number of triangles into.
  */
 bool
-loadGeometry(const tinyobj::ObjReader &reader, GLuint &vertexBufferID, GLuint &vertexArrayID, GLuint &triangles) {
+loadGeometry(const tinyobj::ObjReader &reader, GLuint &vertexBufferID, GLuint &vertexArrayID, GLsizei &triangles) {
     // only support triangles
     const uint8_t faceSides = 3;
 
     triangles = 0;
     for (const auto &shape : reader.GetShapes()) {
-        triangles += shape.mesh.num_face_vertices.size();
+        triangles += (GLsizei)shape.mesh.num_face_vertices.size();
         for (auto vert : shape.mesh.num_face_vertices) {
             if (vert != faceSides) return false;
         }
@@ -223,8 +223,7 @@ renderable::renderable(const std::string &model, const std::string &vertex, cons
         std::exit(1);
     }
 
-    GLuint vertexBufferID, vertexArrayID, triangles = 0;
-    if (!loadGeometry(reader, vertexBufferID, vertexArrayID, triangles)) {
+    if (!loadGeometry(reader, this->vertexBufferID, this->vertexArrayID, this->triangles)) {
         std::cerr << "Error parsing geometry for " << model << ". Are you only using triangles?" << std::endl;
         std::exit(1);
     }
@@ -235,23 +234,19 @@ renderable::renderable(const std::string &model, const std::string &vertex, cons
         std::exit(1);
     }
 
-    GLuint shaderProgramID;
     try {
-        shaderProgramID = loadShaders(vertex, fragment);
+        this->shaderProgramID = loadShaders(vertex, fragment);
     }
     catch (const char *error) {
         std::cerr << error << std::endl;
         std::exit(1);
     }
 
-    if (textures.size()) this->textureID = textures.begin()->second; // todo(arlyon) support multiple textures
-    this->vertexArrayID = vertexArrayID;
-    this->vertexBufferID = vertexBufferID;
-    this->shaderProgramID = shaderProgramID;
-    this->triangles = triangles;
+	// todo(arlyon) support multiple textures
+    if (textures.size()) this->textureID = textures.begin()->second; 
 }
 
-void renderable::render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time, fish *fishComponent) {
+void renderable::render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, double time, fish *fishComponent) {
     glUseProgram(this->shaderProgramID);
     glBindVertexArray(this->vertexArrayID);
     glBindTexture(GL_TEXTURE_2D, this->textureID);
@@ -264,7 +259,7 @@ void renderable::render(position objPos, position camPos, const glm::mat4 &proje
 
     // todo(arlyon) only set time once
     GLuint timeID = glGetUniformLocation(this->shaderProgramID, "time");
-    glUniform1f(timeID, time);
+    glUniform1f(timeID, (float)time);
 
     GLuint cameraPosID = glGetUniformLocation(this->shaderProgramID, "cameraPos");
     glUniform3fv(cameraPosID, 1, glm::value_ptr(camPos.position));
@@ -288,12 +283,12 @@ void renderable::close() {
     glDeleteProgram(shaderProgramID);
 }
 
+static std::random_device rd;
+static std::mt19937 eng(rd());
+static std::uniform_real_distribution<float> dist(0, 10);
+
 fish::fish(uint8_t group) {
     this->group = group;
-    this->hueShift = (float)(group % 5) / 5.0;
-
-    std::random_device rd;
-    std::mt19937 eng(rd());
-    std::uniform_real_distribution<> dist(0, 10);
+    this->hueShift = (float)(group % 5) / 5.0f;
     this->timeOffset = dist(eng);
 }

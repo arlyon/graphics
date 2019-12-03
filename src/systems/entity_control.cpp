@@ -26,31 +26,30 @@ struct mouse_state {
     std::queue<scroll_event> scroll;
     double mouse_x;
     double mouse_y;
-    float sensitivity = 0.005f;
     bool first_mouse = true;
 };
 
 mouse_state state;
 
-void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
+void mouse_callback(GLFWwindow *, double xpos, double ypos) {
     state.move.push({xpos, ypos});
 }
 
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+void scroll_callback(GLFWwindow *, double xoffset, double yoffset) {
     state.scroll.push({xoffset, yoffset});
 }
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+void key_callback(GLFWwindow *, int key, int, int action, int) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         auto &settings = Settings::getInstance();
         settings.enable_menu = !settings.enable_menu;
     }
-};
+}
 
 /**
  * Controls the given entity.
  */
-void entity_control(entt::registry &registry, entt::entity *cam, GLFWwindow *window, GLfloat deltaTime) {
+void entity_control(entt::registry &registry, entt::entity *cam, GLFWwindow *window, double deltaTime) {
     Settings &s = Settings::getInstance();
     auto &vel = registry.get<velocity>(*cam);
     auto &pos = registry.get<position>(*cam);
@@ -61,8 +60,8 @@ void entity_control(entt::registry &registry, entt::entity *cam, GLFWwindow *win
         auto event = state.move.front();
 
         if (!state.first_mouse) {
-            float x_offset = (event.x - state.mouse_x) * state.sensitivity;
-            float y_offset = (state.mouse_y - event.y) * state.sensitivity;
+            double x_offset = (event.x - state.mouse_x) * s.mouse_sensitivity;
+            double y_offset = (state.mouse_y - event.y) * s.mouse_sensitivity;
             pos.orientation *= glm::quat(glm::vec3(-y_offset, x_offset, 0) * pos.orientation);
         } else {
             state.first_mouse = false;
@@ -87,13 +86,13 @@ void entity_control(entt::registry &registry, entt::entity *cam, GLFWwindow *win
     if (glfwGetKey(window, GLFW_KEY_D)) strafe += glm::vec3(1, 0, 0);
     if (glfwGetKey(window, GLFW_KEY_SPACE)) strafe += glm::vec3(0, 1, 0);
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) strafe += glm::vec3(0, -1, 0);
-    vel.velocity += strafe * pos.orientation * deltaTime * 2.0f; // move in the facing direction
+    vel.velocity += strafe * pos.orientation * (float)deltaTime * 2.0f; // move in the facing direction
 
     // fov
     while (!state.scroll.empty())
     {
         auto event = state.scroll.front();
-        s.fov += event.y * deltaTime * 2.0f;
+        s.fov += (float)event.y * (float)deltaTime * 2.0f;
         if (s.fov < 1.0f) s.fov = 1.0f;
         if (s.fov > 120.0f) s.fov = 120.0f;
         state.scroll.pop();

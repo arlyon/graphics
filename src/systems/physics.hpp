@@ -6,4 +6,4 @@
 
 #include <entt/entity/registry.hpp>
 
-void physics(entt::registry &registry, float d);
+void physics(entt::registry &registry, double deltaTime);

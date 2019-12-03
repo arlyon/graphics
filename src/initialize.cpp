@@ -16,13 +16,13 @@
 #include "settings.hpp"
 #include "systems/entity_control.hpp"
 
-void GLAPIENTRY MessageCallback(GLenum source,
+void GLAPIENTRY MessageCallback(GLenum,
                                 GLenum type,
-                                GLuint id,
+                                GLuint,
                                 GLenum severity,
-                                GLsizei length,
+                                GLsizei,
                                 const GLchar *message,
-                                const void *userParam) {
+                                const void *) {
     fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
             (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
             type, severity, message);

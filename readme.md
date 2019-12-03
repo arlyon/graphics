@@ -45,7 +45,7 @@ All the packages are managed in `conanfile.txt`.
 
 ```bash
 conan install . -s build_type=Release --install-folder=release --build=missing
-cmake -DCMAKE_BUILD_TYPE=Release -B release
+cmake -B release
 cmake --build release --target aquarium
 ```
 
@@ -53,7 +53,7 @@ cmake --build release --target aquarium
 
 ```bash
 conan install . -s build_type=Debug --install-folder=debug --build=missing
-cmake -DCMAKE_BUILD_TYPE=Debug -B debug
+cmake -B debug
 cmake --build debug --target aquarium
 ```
 
@@ -64,8 +64,16 @@ conan extension which will download and manage all your dependencies
 automatically. First, generate a solution and simply open it.
 
 ```bash
-cmake -G "Visual Studio 16 2019"
+cmake -G "Visual Studio 16 2019 ."
 ```
+
+Then install the [conan extension](https://github.com/conan-io/conan-vs-extension)
+and, in the solution explorer, right click 'aquarium' and select the 'Install'
+opton.
+
+> Note: If your conan cache is installed anywhere other than the default,
+        you must change the MSVC target compile options in CMakeLists to 
+        reflect it or else errors from the dependencies will be reported.
 
 ### CLion
 

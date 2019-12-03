@@ -14,13 +14,13 @@
  * Objects in motion stay in motion,
  * objects at rest, stay at rest.
  */
-void physics(entt::registry &registry, float deltaTime) {
+void physics(entt::registry &registry, double deltaTime) {
     auto &s = Settings::getInstance();
 
     auto view = registry.view<position, velocity>();
     for (auto entity : view) {
         position &pos = view.get<position>(entity);
         velocity &vel = view.get<velocity>(entity);
-        pos.position += vel.velocity * deltaTime * s.timeScale;
+        pos.position += vel.velocity * (float)deltaTime * s.timeScale;
     }
 }

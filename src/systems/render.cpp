@@ -20,7 +20,7 @@
  * Renders all models with positions from the
  * perspective of the provided camera entity.
  */
-void render(entt::registry &registry, entt::entity *cam, float time) {
+void render(entt::registry &registry, entt::entity *cam, double time) {
     auto color = Settings::getInstance().color;
     glClearColor(color[0], color[1], color[2], 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

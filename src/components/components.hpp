@@ -53,7 +53,7 @@ class renderable {
     GLuint vertexArrayID; // the vertex array for this model
     GLuint shaderProgramID; // the program to use when rendering this model
     GLuint textureID; // the texture ID to use when rendering this model
-    uint64_t triangles; // the number of triangles
+    GLsizei triangles; // the number of triangles
 public:
     /**
     * Creates a renderable from a given obj, vertex shader, and fragment shader.
@@ -64,7 +64,7 @@ public:
     */
     renderable(const std::string &model, const std::string &vertex, const std::string &fragment);
 
-    void render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time, fish *fishComponent);
+    void render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, double time, fish *fishComponent);
 
     void close();
 };

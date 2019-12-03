@@ -27,6 +27,7 @@ public:
     float timeScale = 1.0f;
 
     bool enable_menu = false;
+	float mouse_sensitivity = 0.005f;
 private:
     Settings() = default;
 };

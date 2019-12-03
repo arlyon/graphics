@@ -7,7 +7,11 @@ if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
 else ()
-    message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
+    message(WARNING "\
+The file conanbuildinfo.cmake doesn't exist. \
+Unless you are using a conan plugin, please run 'conan install' first. \
+Refer to the readme for instructions.\
+")
 endif ()
 
 add_executable(aquarium
@@ -29,9 +33,9 @@ target_compile_definitions(aquarium PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
 target_link_libraries(aquarium ${CONAN_LIBS})
 
 if ( MSVC )
-    target_compile_options(aquarium PRIVATE /W4 /WX)
+    target_compile_options(aquarium PRIVATE /W4 /experimental:external /external:I $ENV{USERPROFILE}\\.conan /external:W0 /WX)
 else()
-    target_compile_options(aquarium PRIVATE -Wall -Wextra -pedantic)
+    target_compile_options(aquarium PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
 
 add_custom_target(copy_shaders ALL
