@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <random>
 
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -250,7 +251,7 @@ renderable::renderable(const std::string &model, const std::string &vertex, cons
     this->triangles = triangles;
 }
 
-void renderable::render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time) {
+void renderable::render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, float time, fish *fishComponent) {
     glUseProgram(this->shaderProgramID);
     glBindVertexArray(this->vertexArrayID);
     glBindTexture(GL_TEXTURE_2D, this->textureID);
@@ -263,10 +264,15 @@ void renderable::render(position objPos, position camPos, const glm::mat4 &proje
 
     // todo(arlyon) only set time once
     GLuint timeID = glGetUniformLocation(this->shaderProgramID, "time");
-    glUniform1f(timeID, time);
+    glUniform1f(timeID, time + (fishComponent != nullptr ? fishComponent->getTimeOffset() : 0));
 
     GLuint cameraPosID = glGetUniformLocation(this->shaderProgramID, "cameraPos");
     glUniform3fv(cameraPosID, 1, glm::value_ptr(camPos.position));
+
+    if (fishComponent != nullptr) {
+        GLuint hueID = glGetUniformLocation(this->shaderProgramID, "hueShiftAmount");
+        glUniform1f(hueID, fishComponent->getHueShift());
+    }
 
     glDrawArrays(GL_TRIANGLES, 0, this->triangles * 3);
     glBindVertexArray(0);
@@ -281,6 +287,10 @@ void renderable::close() {
 
 fish::fish(uint8_t group) {
     this->group = group;
-    this->timeOffset = random();
-    this->hueShift = (float)(group % 20) / 20.0;
+    this->hueShift = (float)(group % 5) / 5.0;
+
+    std::random_device rd;
+    std::mt19937 eng(rd());
+    std::uniform_real_distribution<> dist(0, 10);
+    this->timeOffset = dist(eng);
 }

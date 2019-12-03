@@ -45,7 +45,11 @@ void render(entt::registry &registry, entt::entity *cam, float time) {
     for (auto object : objects) {
         auto objPos = objects.get<position>(object);
         auto model = objects.get<renderable>(object);
-        model.render(objPos, camPos, projectionMatrix, viewMatrix, time);
+        fish *fishComponent = nullptr;
+        if (registry.has<fish>(object)) {
+            fishComponent = &registry.get<fish>(object);
+        }
+        model.render(objPos, camPos, projectionMatrix, viewMatrix, time, fishComponent);
     }
 
     GLenum error = glGetError();
