@@ -46,7 +46,7 @@ All the packages are managed in `conanfile.txt`.
 ```bash
 conan install . -s build_type=Release --install-folder=release --build=missing
 cmake -DCMAKE_BUILD_TYPE=Release -B release
-cmake --build release --target cpp_glfw_test
+cmake --build release --target aquarium
 ```
 
 ### Debug
@@ -54,7 +54,7 @@ cmake --build release --target cpp_glfw_test
 ```bash
 conan install . -s build_type=Debug --install-folder=debug --build=missing
 cmake -DCMAKE_BUILD_TYPE=Debug -B debug
-cmake --build debug --target cpp_glfw_test
+cmake --build debug --target aquarium
 ```
 
 ### Visual Studio 2019

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(cpp_glfw_test)
+project(aquarium)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -10,7 +10,7 @@ else ()
     message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
 endif ()
 
-add_executable(cpp_glfw_test
+add_executable(aquarium
         src/main.cpp
         src/initialize.cpp src/initialize.hpp
         src/settings.cpp src/settings.hpp
@@ -26,8 +26,8 @@ add_executable(cpp_glfw_test
         lib/imgui_impl_glfw.cpp lib/imgui_impl_glfw.h
         lib/imgui_impl_opengl3.cpp lib/imgui_impl_opengl3.h)
 
-target_compile_definitions(cpp_glfw_test PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
-target_link_libraries(cpp_glfw_test ${CONAN_LIBS})
+target_compile_definitions(aquarium PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
+target_link_libraries(aquarium ${CONAN_LIBS})
 
 add_custom_target(copy_shaders ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -39,5 +39,5 @@ add_custom_target(copy_models ALL
         "${CMAKE_SOURCE_DIR}/models" "${CMAKE_BINARY_DIR}/bin/models"
         COMMENT "Copy Models" VERBATIM)
 
-ADD_DEPENDENCIES(cpp_glfw_test copy_shaders)
-ADD_DEPENDENCIES(cpp_glfw_test copy_models)
+ADD_DEPENDENCIES(aquarium copy_shaders)
+ADD_DEPENDENCIES(aquarium copy_models)
