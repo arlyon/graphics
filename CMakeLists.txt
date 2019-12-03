@@ -32,21 +32,37 @@ add_executable(aquarium
 target_compile_definitions(aquarium PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
 target_link_libraries(aquarium CONAN_PKG::glfw CONAN_PKG::glew CONAN_PKG::glm CONAN_PKG::imgui CONAN_PKG::entt CONAN_PKG::stb)
 
+# set compile options
 if ( MSVC )
     target_compile_options(aquarium PRIVATE /W4 /experimental:external /external:I $ENV{USERPROFILE}\\.conan /external:W0 /WX)
 else()
     target_compile_options(aquarium PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
 
+# copy shaders and models on build
 add_custom_target(copy_shaders ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/shaders" "${CMAKE_BINARY_DIR}/bin/shaders"
         COMMENT "Copy Shaders" VERBATIM)
-
 add_custom_target(copy_models ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/models" "${CMAKE_BINARY_DIR}/bin/models"
         COMMENT "Copy Models" VERBATIM)
+add_dependencies(aquarium copy_shaders)
+add_dependencies(aquarium copy_models)
 
-ADD_DEPENDENCIES(aquarium copy_shaders)
-ADD_DEPENDENCIES(aquarium copy_models)
+# install target
+install(TARGETS aquarium DESTINATION .)
+file(GLOB shaders "shaders/*")
+install(FILES ${shaders} DESTINATION shaders)
+file(GLOB models "models/*")
+install(FILES ${models} DESTINATION models)
+
+# cpack config
+set(CPACK_PACKAGE_VENDOR "Alexander Lyon")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Aquarium Demoscene For 3d Graphics")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/readme.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/license.md")
+set(CPACK_OUTPUT_FILE_PREFIX packages)
+set(CPACK_PACKAGE_VERSION "1.0.0")
+include(CPack)
