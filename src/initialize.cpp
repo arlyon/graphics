@@ -14,6 +14,7 @@
 #include "../lib/imgui_impl_opengl3.h"
 #include "initialize.hpp"
 #include "settings.hpp"
+#include "systems/entity_control.hpp"
 
 void GLAPIENTRY MessageCallback(GLenum source,
                                 GLenum type,
@@ -101,13 +102,12 @@ void initializeUI(GLFWwindow *window) {
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
+}
 
-    glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
-        if (key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
-            auto &settings = Settings::getInstance();
-            settings.enable_menu = !settings.enable_menu;
-        }
-    });
+void initializeInput(GLFWwindow *window) {
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback);
 }
 
 void teardown() {

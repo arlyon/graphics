@@ -40,6 +40,13 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
     state.scroll.push({xoffset, yoffset});
 }
 
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        auto &settings = Settings::getInstance();
+        settings.enable_menu = !settings.enable_menu;
+    }
+};
+
 /**
  * Controls the given entity.
  */

@@ -29,9 +29,8 @@ int main() {
 
     auto *window = initializeOpenGL();
     initializeUI(window);
+    initializeInput(window);
 
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
 
     renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_fish.glsl");
 
