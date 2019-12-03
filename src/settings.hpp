@@ -22,7 +22,7 @@ public:
 
     int32_t fish = 30;
     float fov = 60.0f;
-    float color[3] = {0.4f, 0.8f, 1.0f};
+    glm::vec3 color = glm::vec3(0.1f, 0.12f, 0.33f);
 
     float timeScale = 1.0f;
 

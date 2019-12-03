@@ -9,8 +9,9 @@ out vec4 color;
 uniform sampler2D textureImage;
 uniform vec3 cameraPos;
 uniform float time;
-uniform vec3 lightDir = vec3(0, 1, 0);
-uniform float ambientStrength = 0.6;
+uniform vec3 lightDir = vec3(0, -1, 0);
+uniform int bpm = 125;
+uniform float ambientStrength = 0.5;
 uniform float hueShiftAmount = 0.0;
 uniform vec3 fogColor = vec3(20, 23, 55) / 255;
 uniform vec3 backgroundColor = vec3(0.1, 0.12, 0.33);
@@ -46,24 +47,27 @@ void main()
     vec3 albedo = hueShift(texture(textureImage, texcoord).rgb, hueShiftAmount * PI * 2);
 
     // calculate ambient contribution
-    vec3 ambientColor = vec3(0.4, 0.7, 0.9);
+    vec3 ambientColor = vec3(0.1, 0.4, 0.7);
     vec3 ambient = ambientStrength * ambientColor * albedo;
 
     // calculate diffuse contribution
     vec3 lightDir = normalize(lightDir);
     vec3 normal = normalize(normal);
     float diffuseAmount = max(dot(lightDir, normal), 0.0);
-    vec3 diffuse = diffuseAmount * albedo;
+    vec3 diffuse = diffuseAmount * albedo * 1.2f;
 
     // calculate specular contribution
     vec3 viewDir = normalize(cameraPos - position);
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
-    vec3 specular = vec3(0.3, 0.5, 0.6) * spec;
+    vec3 specular = vec3(0.5) * spec;
+
+    // calculate light flash
+    vec4 light = vec4(mix(ambient + diffuse + specular, vec3(0.04, 0.08, 0.15), (sin(time * 2 * PI * (bpm / 60)) + 1.4) / 3), 1.0);
 
     // calculate fog
     float relativeDistance = position.z;
     vec4 fog = vec4(mix(fogColor, backgroundColor, smoothstep(10, 50, relativeDistance)), 1.0);
 
-    color = mix(vec4(ambient + diffuse + specular, 1.0), fog, smoothstep(0, 30, relativeDistance));
+    color = mix(light, fog, smoothstep(0, 30, relativeDistance));
 }

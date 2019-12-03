@@ -10,6 +10,7 @@ out vec2 texcoord;
 
 uniform mat4 mvp;
 uniform float time;
+uniform float timeOffset;
 
 #define PI 3.14
 
@@ -20,7 +21,7 @@ float headMask(vec3 worldSpace, float start, float stop) {
 }
 
 vec3 yaw(vec3 worldSpace) {
-    float yaw_a = sin(time * PI * 2) * 0.2;
+    float yaw_a = sin((time + timeOffset) * PI * 2) * 0.2;
     float yaw_cos = cos(yaw_a);
     float yaw_sin = sin(yaw_a);
 
@@ -32,7 +33,7 @@ vec3 yaw(vec3 worldSpace) {
 }
 
 vec3 twist(vec3 worldSpace) {
-    float twist_a = headMask(worldSpace, -3, 8) * sin(worldSpace.z + time * PI * 2) * 0.8;
+    float twist_a = headMask(worldSpace, -3, 8) * sin(worldSpace.z + (time + timeOffset) * PI * 2) * 0.8;
     float twist_cos = cos(twist_a);
     float twist_sin = sin(twist_a);
 
@@ -44,7 +45,7 @@ vec3 twist(vec3 worldSpace) {
 }
 
 vec3 swim(vec3 worldSpace) {
-    float twist_a = headMask(worldSpace, -1.5, 5) * sin(worldSpace.z + time * PI * 2) * 0.6;
+    float twist_a = headMask(worldSpace, -1.5, 5) * sin(worldSpace.z + (time + timeOffset) * PI * 2) * 0.6;
     float twist_cos = cos(twist_a);
     float twist_sin = sin(twist_a);
 
@@ -56,7 +57,7 @@ vec3 swim(vec3 worldSpace) {
 }
 
 vec3 translate(vec3 worldSpace) {
-    float loc = sin(time * (3 * PI) / 2) * 0.3;
+    float loc = sin((time + timeOffset) * (3 * PI) / 2) * 0.3;
     return vec3(pow(abs(loc), 0.77) / 6 * sign(loc), 0, 0);
 }
 
@@ -68,10 +69,10 @@ void main()
     worldSpace = yaw(worldSpace);
     worldSpace += translate(positionAttribute);
 
-    gl_Position = mvp * vec4(worldSpace, 1.0);
-
     // export normals and texture coordinates
-    position = gl_Position.xyz;
+    position = worldSpace;
     normal = normalAttribute;
     texcoord = texcoordAttribute;
+
+    gl_Position = mvp * vec4(worldSpace, 1.0);
 }

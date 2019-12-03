@@ -80,14 +80,14 @@ void entity_control(entt::registry &registry, entt::entity *cam, GLFWwindow *win
     if (glfwGetKey(window, GLFW_KEY_D)) strafe += glm::vec3(1, 0, 0);
     if (glfwGetKey(window, GLFW_KEY_SPACE)) strafe += glm::vec3(0, 1, 0);
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) strafe += glm::vec3(0, -1, 0);
-    vel.velocity += strafe * pos.orientation * deltaTime; // move in the facing direction
+    vel.velocity += strafe * pos.orientation * deltaTime * 2.0f; // move in the facing direction
 
     // fov
     while (!state.scroll.empty())
     {
         auto event = state.scroll.front();
         s.fov += event.y * deltaTime * 2.0f;
-        if (s.fov < 30.0f) s.fov = 30.0f;
+        if (s.fov < 1.0f) s.fov = 1.0f;
         if (s.fov > 120.0f) s.fov = 120.0f;
         state.scroll.pop();
     }

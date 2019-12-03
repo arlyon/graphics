@@ -264,7 +264,7 @@ void renderable::render(position objPos, position camPos, const glm::mat4 &proje
 
     // todo(arlyon) only set time once
     GLuint timeID = glGetUniformLocation(this->shaderProgramID, "time");
-    glUniform1f(timeID, time + (fishComponent != nullptr ? fishComponent->getTimeOffset() : 0));
+    glUniform1f(timeID, time);
 
     GLuint cameraPosID = glGetUniformLocation(this->shaderProgramID, "cameraPos");
     glUniform3fv(cameraPosID, 1, glm::value_ptr(camPos.position));
@@ -272,6 +272,9 @@ void renderable::render(position objPos, position camPos, const glm::mat4 &proje
     if (fishComponent != nullptr) {
         GLuint hueID = glGetUniformLocation(this->shaderProgramID, "hueShiftAmount");
         glUniform1f(hueID, fishComponent->getHueShift());
+
+        GLuint timeOffsetID = glGetUniformLocation(this->shaderProgramID, "timeOffset");
+        glUniform1f(timeOffsetID, fishComponent->getTimeOffset());
     }
 
     glDrawArrays(GL_TRIANGLES, 0, this->triangles * 3);
