@@ -20,13 +20,13 @@ public:
 
     void operator=(Settings const &) = delete;
 
-    int32_t fish = 1;
+    int32_t fish = 30;
     float fov = 60.0f;
     float color[3] = {0.4f, 0.8f, 1.0f};
 
-    bool enable_menu = true;
-    bool orbit = false;
-    glm::vec3 camPos;
+    float timeScale = 1.0f;
+
+    bool enable_menu = false;
 private:
     Settings() = default;
 };

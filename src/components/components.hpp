@@ -19,7 +19,7 @@
  */
 struct position {
     glm::vec3 position;
-    glm::quat rotation;
+    glm::quat orientation;
 };
 
 /**

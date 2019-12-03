@@ -14,15 +14,13 @@
 #include <glm/gtc/quaternion.hpp>
 #include <imgui.h>
 
-#include "systems/render.hpp"
-#include "systems/camera_orbit.hpp"
+#include "initialize.hpp"
 #include "settings.hpp"
 #include "components/components.hpp"
-#include "systems/camera_orbit.hpp"
 #include "systems/render.hpp"
+#include "systems/entity_control.hpp"
 #include "systems/fish_population.hpp"
 #include "systems/physics.hpp"
-#include "initialize.hpp"
 
 int main() {
     auto &settings = Settings::getInstance();
@@ -31,10 +29,14 @@ int main() {
     auto *window = initializeOpenGL();
     initializeUI(window);
 
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
     renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_fish.glsl");
 
     auto cam = registry.create();
     registry.assign<position>(cam, glm::vec3(0,0,5), glm::quatLookAt(glm::vec3(0,0,-1), glm::vec3(0,1,0))); // raised slightly, and moved back toward the screen, looking at the origin
+    registry.assign<velocity>(cam, glm::vec3(0,0,0));
     registry.assign<camera>(cam, &settings.fov, window);
 
     GLfloat currentTime;
@@ -42,17 +44,23 @@ int main() {
     GLfloat lastTime = 0.0;
 
     while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
         currentTime = glfwGetTime();
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
         /* Run Systems */
-        camera_orbit(registry, deltaTime);
         physics(registry, deltaTime);
 
         fish_population(registry, fishModel);
         render(registry, &cam, currentTime);
-        if (settings.enable_menu) renderUI();
+        if (settings.enable_menu) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            renderUI();
+        } else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            entity_control(registry, &cam, window, deltaTime);
+        }
 
         glfwSwapBuffers(window);
     }

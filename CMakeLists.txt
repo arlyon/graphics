@@ -12,13 +12,13 @@ endif ()
 
 add_executable(cpp_glfw_test
         src/main.cpp
-        src/systems/render.cpp src/systems/render.hpp
-        src/systems/camera_orbit.cpp src/systems/camera_orbit.hpp
-        src/systems/physics.cpp src/systems/physics.hpp
-        src/systems/fish_population.cpp src/systems/fish_population.hpp
         src/initialize.cpp src/initialize.hpp
         src/settings.cpp src/settings.hpp
         src/components/components.cpp src/components/components.hpp
+        src/systems/entity_control.cpp src/systems/entity_control.hpp
+        src/systems/fish_population.cpp src/systems/fish_population.hpp
+        src/systems/physics.cpp src/systems/physics.hpp
+        src/systems/render.cpp src/systems/render.hpp
 
         lib/tiny_obj_loader.cpp lib/tiny_obj_loader.h
         lib/imgui_impl_glfw.cpp lib/imgui_impl_glfw.h

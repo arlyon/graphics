@@ -255,7 +255,7 @@ void renderable::render(position objPos, position camPos, const glm::mat4 &proje
     glBindVertexArray(this->vertexArrayID);
     glBindTexture(GL_TEXTURE_2D, this->textureID);
 
-    glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), objPos.position) * glm::mat4_cast(objPos.rotation);
+    glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), objPos.position) * glm::mat4_cast(objPos.orientation);
     glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
 
     GLuint mvpID = glGetUniformLocation(this->shaderProgramID, "mvp");

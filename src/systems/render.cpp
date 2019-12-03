@@ -29,7 +29,7 @@ void render(entt::registry &registry, entt::entity *cam, float time) {
     camera camData = cameras.get<camera>(*cam);
     position camPos = cameras.get<position>(*cam);
 
-    const glm::mat4 viewMatrix = glm::translate(glm::mat4(1.0), -camPos.position) * glm::mat4_cast(camPos.rotation);
+    const glm::mat4 viewMatrix = glm::mat4_cast(camPos.orientation) * glm::translate(glm::mat4(1.0), -camPos.position);
 
     int width, height;
     glfwGetWindowSize(camData.window, &width, &height);
@@ -63,13 +63,12 @@ void renderUI() {
     ImGui::NewFrame();
     ImGui::Begin("Debug Menu");
     ImGui::Text("Camera Settings");
-    ImGui::Checkbox("Manual Position", &settings.orbit);
-    ImGui::SliderFloat3("Position", (float *)&settings.camPos, -10.0, 10.0);
     ImGui::SliderFloat("FOV", &settings.fov, 30.0f, 120.0f);
     ImGui::Separator();
     ImGui::Text("Scene Settings");
     ImGui::SliderInt("Fish Count", &settings.fish, 1, 1000);
     ImGui::ColorEdit3("Background Color", settings.color);
+    ImGui::SliderFloat("Time Scale", &settings.timeScale, 0.0f, 5.0f);
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
