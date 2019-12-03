@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
+    conan_basic_setup(TARGETS)
 else ()
     message(WARNING "\
 The file conanbuildinfo.cmake doesn't exist. \
@@ -30,7 +30,7 @@ add_executable(aquarium
         lib/imgui_impl_opengl3.cpp lib/imgui_impl_opengl3.h)
 
 target_compile_definitions(aquarium PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
-target_link_libraries(aquarium ${CONAN_LIBS})
+target_link_libraries(aquarium CONAN_PKG::glfw CONAN_PKG::glew CONAN_PKG::glm CONAN_PKG::imgui CONAN_PKG::entt CONAN_PKG::stb)
 
 if ( MSVC )
     target_compile_options(aquarium PRIVATE /W4 /experimental:external /external:I $ENV{USERPROFILE}\\.conan /external:W0 /WX)
