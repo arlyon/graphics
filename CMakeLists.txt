@@ -29,6 +29,12 @@ add_executable(aquarium
 target_compile_definitions(aquarium PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
 target_link_libraries(aquarium ${CONAN_LIBS})
 
+if ( MSVC )
+    target_compile_options(aquarium PRIVATE /W4 /WX)
+else()
+    target_compile_options(aquarium PRIVATE -Wall -Wextra -pedantic)
+endif()
+
 add_custom_target(copy_shaders ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/shaders" "${CMAKE_BINARY_DIR}/bin/shaders"
