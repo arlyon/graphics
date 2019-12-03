@@ -1,33 +1,47 @@
-# Graphics Example
+<p align="center"><img src="./splash.jpg" /></p>
 
-Requires a graphics card with OpenGL 4.1 or above.
+# Aquarium
 
-- INSTANCING MORE MARKS
+![version](https://img.shields.io/github/v/release/arlyon/graphics)
+![date](https://img.shields.io/badge/platform-macOS%20%7C%20linux%20%7C%20windows-lightgrey)
+![build](https://img.shields.io/github/workflow/status/arlyon/graphics/CI)
+![license](https://img.shields.io/github/license/arlyon/graphics)
 
-## Requirements
+Aquarium is a cross-platform light-weight ECS games engine that is used 
+to build a simple demoscene. It is powered by OpenGL 4 and ENTT. The 
+latest release is available for Windows, macOS, and Linux in the 
+[releases](https://github.com/arlyon/graphics/releases) section.
 
-To build this software you must have
+## Setup
 
+### Prerequisites
+
+To run this software you must have:
+
+- [a copy](https://github.com/arlyon/graphics/releases)
+- vcredist140 (windows only)
+
+To build this software you must have:
+
+- a cpp compiler
 - a recent cmake
 - a recent python
-- the software dependencies
 
 ### Tools
 
-This project uses cmake, the meta build tool, to generate
-the correct build scripts for your platform. You can get a copy [here](https://cmake.org).
-
-Additionally, software dependencies are handled via [`conan`](https://github.com/conan-io/conan),
-a package manager for c++. You can install this with pip.
+This project uses cmake, a meta build tool, to generate the correct 
+build scripts for your platform. The library dependencies are handled 
+via [`conan`](https://github.com/conan-io/conan), a package manager for 
+c++. You can install both with pip:
 
 ```bash
-pip install conan
+pip install conan cmake
 ```
 
 ### Libraries
 
-This project uses a few libraries. This is how you properly compile them.
-All the packages are managed in `conanfile.txt`.
+This project uses a few libraries. Most of the packages are listed in 
+`conanfile.txt`, however `tiny_obj_loader` is not on conan.
 
 | Library | Purpose | License |
 | ------- | ------- | ------- |
@@ -36,8 +50,8 @@ All the packages are managed in `conanfile.txt`.
 | GLM     | Cross-platform math library for use with OpenGL | MIT |
 | imgui   | A simple UI library | MIT |
 | entt    | Simple ECS library for data-oriented programming | MIT |
+| stb     | Various single file libraries. Used for image loading. | Public Domain |
 | tiny_obj_loader | A header-only library for loading obj meshes | MIT |
-
 
 ## Building
 
@@ -47,6 +61,9 @@ All the packages are managed in `conanfile.txt`.
 conan install . -s build_type=Release --install-folder=release --build=missing
 cmake -B release
 cmake --build release --target aquarium
+
+# alternatively...
+cmake --build release --target package
 ```
 
 ### Debug
@@ -57,6 +74,8 @@ cmake -B debug
 cmake --build debug --target aquarium
 ```
 
+## IDE Setup
+
 ### Visual Studio 2019
 
 The easiest way to get set up with Visual Studio is to install the
@@ -64,7 +83,7 @@ conan extension which will download and manage all your dependencies
 automatically. First, generate a solution and simply open it.
 
 ```bash
-cmake -G "Visual Studio 16 2019 ."
+cmake . -G "Visual Studio 16 2019"
 ```
 
 Then install the [conan extension](https://github.com/conan-io/conan-vs-extension)
