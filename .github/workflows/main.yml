@@ -1,10 +1,10 @@
 name: CI
 on: [push]
 jobs:
-  build-artifacts:
+  build:
     strategy:
       matrix:
-        platform: [windows, macOS]
+        platform: [windows, macOS, ubuntu]
     runs-on: '${{ matrix.platform }}-latest'
     steps:
       - uses: actions/checkout@master
@@ -14,13 +14,13 @@ jobs:
           architecture: 'x64'
       - name: Install Dependencies
         run: |
-          pip install conan
+          pip install conan cmake
           conan install . -s build_type=Debug --install-folder=debug --build=missing
       - name: Build Project
         run: |
-          cmake -DCMAKE_BUILD_TYPE=Debug -B debug
+          cmake . -B debug
           cmake --build debug --target aquarium
       - uses: actions/upload-artifact@master
         with:
-          name: '${{ matrix.platform }}'
+          name: ${{ matrix.platform }}
           path: debug/bin
