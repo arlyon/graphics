@@ -6,6 +6,11 @@
 
 #include <entt/entt.hpp>
 
+extern int windowWidth;
+extern int windowHeight;
+
+void window_size_callback(GLFWwindow*, int width, int height);
+
 void render(entt::registry &registry, entt::entity *cam, double deltaTime);
 
 void renderUI();

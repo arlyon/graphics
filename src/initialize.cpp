@@ -15,6 +15,7 @@
 #include "initialize.hpp"
 #include "settings.hpp"
 #include "systems/entity_control.hpp"
+#include "systems/render.hpp"
 
 void GLAPIENTRY MessageCallback(GLenum,
                                 GLenum type,
@@ -52,7 +53,7 @@ GLFWwindow *initializeOpenGL() {
     }
 
     GLFWwindow *window;
-    window = glfwCreateWindow(640, 480, "Hello Sea++", nullptr, nullptr);
+    window = glfwCreateWindow(windowWidth, windowHeight, "Hello Sea++", nullptr, nullptr);
     if (window == nullptr) {
         std::cerr << "Couldn't create the glfw window" << std::endl;
         glfwTerminate();
@@ -75,7 +76,6 @@ GLFWwindow *initializeOpenGL() {
     std::cout << "VENDOR: " << (char *) glGetString(GL_VENDOR) << std::endl;
     std::cout << "VERSION: " << (char *) glGetString(GL_VERSION) << std::endl;
     std::cout << "RENDERER: " << (char *) glGetString(GL_RENDERER) << std::endl;
-
 #if __APPLE__
 #else
     glDebugMessageCallback(MessageCallback, 0);
@@ -86,6 +86,8 @@ GLFWwindow *initializeOpenGL() {
     // render fragments in the correct order
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+
+    glfwSetWindowSizeCallback(window, window_size_callback);
 
     return window;
 }

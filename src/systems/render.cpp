@@ -17,6 +17,13 @@
 #include "../settings.hpp"
 
 static double currentTime = 0;
+int windowWidth = 640;
+int windowHeight = 480;
+
+void window_size_callback(GLFWwindow*, int width, int height) {
+    windowWidth = width;
+    windowHeight = height;
+}
 
 /**
  * Renders all models with positions from the
@@ -36,30 +43,26 @@ void render(entt::registry &registry, entt::entity *cam, double deltaTime) {
     position camPos = cameras.get<position>(*cam);
 
     const glm::mat4 viewMatrix = glm::mat4_cast(camPos.orientation) * glm::translate(glm::mat4(1.0), -camPos.position);
-
-    int width, height;
-    glfwGetWindowSize(camData.window, &width, &height);
     const glm::mat4 projectionMatrix = glm::perspective(
             glm::radians(*camData.fov),
-            (float) width / height,
+            (float) windowWidth / windowHeight,
             0.1f,
             1000.0f
     );
 
-    // todo(arlyon) instancing on fish
-    auto objects = registry.view<renderable, position>();
-    for (auto object : objects) {
-        auto objPos = objects.get<position>(object);
-        auto model = objects.get<renderable>(object);
-        fish *fishComponent = nullptr;
-        if (registry.has<fish>(object)) {
-            fishComponent = &registry.get<fish>(object);
-        }
-        model.render(objPos, camPos, projectionMatrix, viewMatrix, currentTime, fishComponent);
+    // render all the renderables
+    auto renderableView = registry.view<renderable, position>();
+    for (auto entity : renderableView) {
+        auto objPos = renderableView.get<position>(entity);
+        auto model = renderableView.get<renderable>(entity);
+        model.render(objPos, camPos, projectionMatrix, viewMatrix, currentTime);
     }
 
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR) {
+    // render all the fish
+    auto fishView = registry.view<renderable, position, fish>();
+
+    GLenum error;
+    while ((error = glGetError()) != GL_NO_ERROR) {
         std::cout << "Render Error: 0x" << std::hex << error << std::endl;
     }
 }

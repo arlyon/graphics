@@ -19,6 +19,8 @@ add_executable(aquarium
         src/initialize.cpp src/initialize.hpp
         src/settings.cpp src/settings.hpp
         src/components/components.cpp src/components/components.hpp
+        src/components/render.cpp src/components/render.hpp
+        src/components/physics.hpp
 		src/systems/boids.cpp src/systems/boids.hpp
         src/systems/entity_control.cpp src/systems/entity_control.hpp
         src/systems/fish_population.cpp src/systems/fish_population.hpp
@@ -36,7 +38,7 @@ target_link_libraries(aquarium CONAN_PKG::glfw CONAN_PKG::glew CONAN_PKG::glm CO
 if ( MSVC )
     target_compile_options(aquarium PRIVATE /W4 /experimental:external /external:I $ENV{USERPROFILE}\\.conan /external:W0 /WX)
 else()
-    target_compile_options(aquarium PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(aquarium PRIVATE -Wall -Wextra -pedantic)
 endif()
 
 # copy shaders and models on build

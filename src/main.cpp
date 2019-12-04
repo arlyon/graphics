@@ -31,12 +31,13 @@ int main() {
     initializeUI(window);
     initializeInput(window);
 
-    renderable fishModel = renderable("models/fish.obj", "shaders/vertex_fish.glsl", "shaders/fragment_party_fish.glsl");
-
-    renderable cubeModel = renderable("models/cube.obj", "shaders/vertex_fish.glsl", "shaders/fragment_party_fish.glsl");
+    shader partyFish = shader("shaders/vertex_fish.glsl", "shaders/fragment_party_fish.glsl");
+    renderable fishModel = renderable("models/fish.obj", partyFish);
+    shader speaker = shader("shaders/vertex_fish.glsl", "shaders/fragment_speaker.glsl");
+    renderable cubeModel = renderable("models/cube.obj", speaker);
 
     auto cam = registry.create();
-    registry.assign<position>(cam, glm::vec3(0,20,100), glm::quatLookAt(glm::vec3(0,0.2,-1), glm::vec3(0,1,0)));
+    registry.assign<position>(cam, glm::vec3(0,10,40), glm::quatLookAt(glm::vec3(0,0.2,-0.8), glm::vec3(0,1,0)));
     registry.assign<velocity>(cam, glm::vec3(0,0,0));
     registry.assign<camera>(cam, &settings.fov, window);
 

@@ -7,28 +7,10 @@
 #include <stdint.h>
 
 #include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include <GLFW/glfw3.h>
 
+#include "render.hpp"
 #include "../../lib/tiny_obj_loader.h"
-
-/**
- * Some physical object with a position. Entities with a
- * position and a model are rendered to the screen.
- */
-struct position {
-    glm::vec3 position;
-    glm::quat orientation;
-};
-
-/**
- * Velocity. Entities with a velocity will have their
- * position updated by the physics engine.
- */
-struct velocity {
-    glm::vec3 velocity;
-};
 
 /**
  * A marker for the fish population manager to show
@@ -40,33 +22,12 @@ class fish {
     float hueShift;
 public:
     fish(uint8_t group);
-    float getHueShift() const {return this->hueShift;}
-    uint8_t getGroup() const {return this->group;}
-    float getTimeOffset() const {return this->timeOffset;}
-};
 
-/**
- * A model to be rendered by OpenGL
- */
-class renderable {
-    GLuint vertexBufferID; // the vertex buffer for this model
-    GLuint vertexArrayID; // the vertex array for this model
-    GLuint shaderProgramID; // the program to use when rendering this model
-    GLuint textureID; // the texture ID to use when rendering this model
-    GLsizei triangles; // the number of triangles
-public:
-    /**
-    * Creates a renderable from a given obj, vertex shader, and fragment shader.
-    * @param model The path to the model to use the renderable with.
-    * @param vertex The path to the vertex shader to use.
-    * @param fragment The path to the fragment shader to use.
-    * @return A renderable.
-    */
-    renderable(const std::string &model, const std::string &vertex, const std::string &fragment);
+    float getHueShift() const { return this->hueShift; }
 
-    void render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, double time, fish *fishComponent);
+    uint8_t getGroup() const { return this->group; }
 
-    void close();
+    float getTimeOffset() const { return this->timeOffset; }
 };
 
 /**
