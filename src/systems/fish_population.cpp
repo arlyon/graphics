@@ -26,16 +26,17 @@ void fish_population(entt::registry &registry, renderable fishModel) {
         for (int i = 0; i < fishDeficit; i++) {
             auto entity = registry.create();
             registry.assign<position>(entity, glm::vec3(i, 0, 0), glm::quatLookAt(glm::vec3(0,0,-1), glm::vec3(0, 1, 0)));
-            registry.assign<velocity>(entity, glm::vec3(0, 0, -5));
+            registry.assign<velocity>(entity, glm::vec3(0, 0, 0));
             registry.assign<renderable>(entity, fishModel);
-            registry.assign<fish>(entity, i % 5);
+            registry.assign<fish>(entity, (s.fish - fishDeficit + i) % 5);
         }
     } else {
         // kill some
         auto fishIter = f.begin();
-        for (int i = 0; i < -fishDeficit; i++) {
+        while (fishIter != f.end() && fishDeficit < 0) {
             auto entity = std::next(fishIter);
             registry.destroy(*entity);
+            fishDeficit++;
         }
     }
 }
