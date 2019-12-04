@@ -40,9 +40,18 @@ void scroll_callback(GLFWwindow *, double xoffset, double yoffset) {
 }
 
 void key_callback(GLFWwindow *, int key, int, int action, int) {
+    auto &settings = Settings::getInstance();
+
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        auto &settings = Settings::getInstance();
         settings.enable_menu = !settings.enable_menu;
+    }
+
+    if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS) {
+        settings.fish++;
+    }
+
+    if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
+        settings.fish = settings.fish > 0 ? settings.fish - 1 : 0;
     }
 }
 

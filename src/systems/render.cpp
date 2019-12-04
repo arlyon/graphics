@@ -76,7 +76,7 @@ void renderUI() {
     ImGui::SliderFloat("FOV", &settings.fov, 30.0f, 120.0f);
     ImGui::Separator();
     ImGui::Text("Scene Settings");
-    ImGui::SliderInt("Fish Count", &settings.fish, 1, 1000);
+    ImGui::SliderInt("Fish Count", &settings.fish, 0, 1000);
     ImGui::ColorEdit3("Background Color", (float *)&settings.color);
     ImGui::SliderFloat("Time Scale", &settings.timeScale, 0.0f, 5.0f);
     ImGui::End();
