@@ -13,7 +13,7 @@
 /**
  * Rule 1: Boids want to move towards the centre of mass of neighbouring boids.
  */
-glm::vec3 rule1(entt::basic_view<entt::entity, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
+glm::vec3 rule1(entt::view<entt::exclude_t<>, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
     auto ourPosition = sortedFish.get<position>(ourEntity);
 
     uint8_t c = 0;
@@ -33,7 +33,7 @@ glm::vec3 rule1(entt::basic_view<entt::entity, position, velocity, fish> &sorted
  *
  * todo(arlyon) smoothen out boids
  */
-glm::vec3 rule2(entt::basic_view<entt::entity, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
+glm::vec3 rule2(entt::view<entt::exclude_t<>, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
     auto ourPosition = sortedFish.get<position>(ourEntity);
 
     uint8_t c = 0;
@@ -56,7 +56,7 @@ glm::vec3 rule2(entt::basic_view<entt::entity, position, velocity, fish> &sorted
 /**
  * Rule 3: Boids try to match velocity with near boids.
  */
-glm::vec3 rule3(entt::basic_view<entt::entity, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
+glm::vec3 rule3(entt::view<entt::exclude_t<>, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
     auto ourVelocity = sortedFish.get<velocity>(ourEntity);
 
     uint8_t c = 0;
@@ -76,14 +76,14 @@ glm::vec3 rule3(entt::basic_view<entt::entity, position, velocity, fish> &sorted
 /**
  * Additional Rule 4: Boids try to move toward the origin.
  */
-glm::vec3 rule4(entt::basic_view<entt::entity, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
+glm::vec3 rule4(entt::view<entt::exclude_t<>, position, velocity, fish> &sortedFish, entt::entity &ourEntity) {
     return -sortedFish.get<position>(ourEntity).position;
 }
 
 /**
  * Additional Rule 5: Boids try to avoid the camera.
  */
-glm::vec3 rule5(entt::basic_view<entt::entity, position, velocity, fish> &sortedFish, entt::entity &ourEntity,
+glm::vec3 rule5(entt::view<entt::exclude_t<>, position, velocity, fish> &sortedFish, entt::entity &ourEntity,
                 entt::registry &registry, entt::entity *avoid) {
     auto ourPosition = sortedFish.get<position>(ourEntity);
     auto avoidPos = registry.get<position>(*avoid);
