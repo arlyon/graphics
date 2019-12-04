@@ -1,6 +1,7 @@
 #version 410 core
 
-in vec3 position;
+in vec3 screen;
+in vec3 world;
 in vec3 normal;
 in vec2 texcoord;
 
@@ -14,6 +15,7 @@ uniform int bpm = 125;
 uniform float ambientStrength = 0.5;
 uniform float hueShiftAmount = 0.0;
 uniform vec3 fogColor = vec3(20, 23, 55) / 255;
+uniform vec3 ambientColor = vec3(0.1, 0.4, 0.7);
 uniform vec3 backgroundColor = vec3(0.1, 0.12, 0.33);
 
 #define PI 3.14
@@ -47,7 +49,6 @@ void main()
     vec3 albedo = hueShift(texture(textureImage, texcoord).rgb, hueShiftAmount * PI * 2);
 
     // calculate ambient contribution
-    vec3 ambientColor = vec3(0.1, 0.4, 0.7);
     vec3 ambient = ambientStrength * ambientColor * albedo;
 
     // calculate diffuse contribution
@@ -57,17 +58,15 @@ void main()
     vec3 diffuse = diffuseAmount * albedo * 1.2f;
 
     // calculate specular contribution
-    vec3 viewDir = normalize(cameraPos - position);
+    vec3 viewDir = normalize(cameraPos - world);
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
     vec3 specular = vec3(0.5) * spec;
 
     // calculate light flash
-    vec4 light = vec4(mix(ambient + diffuse + specular, vec3(0.04, 0.08, 0.15), (sin(time * 2 * PI * (bpm / 60)) + 1.4) / 3), 1.0);
-
+    vec3 light = mix(ambient + diffuse + specular, vec3(0.04, 0.08, 0.15), (sin(time * 2 * PI * (bpm / 60)) + 1.4) / 3);
     // calculate fog
-    float relativeDistance = position.z;
-    vec4 fog = vec4(mix(fogColor, backgroundColor, smoothstep(10, 50, relativeDistance)), 1.0);
+    vec3 fog = mix(fogColor, backgroundColor, smoothstep(40.0, 150.0, screen.z));
 
-    color = mix(light, fog, smoothstep(0, 30, relativeDistance));
+    color = vec4(mix(light, fog, smoothstep(20, 60.0, screen.z)), 1.0);
 }

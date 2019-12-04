@@ -4,7 +4,8 @@ layout (location = 0) in vec3 positionAttribute;
 layout (location = 1) in vec3 normalAttribute;
 layout (location = 2) in vec2 texcoordAttribute;
 
-out vec3 position;
+out vec3 screen;
+out vec3 world;
 out vec3 normal;
 out vec2 texcoord;
 
@@ -21,7 +22,7 @@ float headMask(vec3 worldSpace, float start, float stop) {
 }
 
 vec3 yaw(vec3 worldSpace) {
-    float yaw_a = sin((time + timeOffset) * PI * 2) * 0.2;
+    float yaw_a = sin((time + timeOffset) * PI * 2) * 0.1;
     float yaw_cos = cos(yaw_a);
     float yaw_sin = sin(yaw_a);
 
@@ -69,10 +70,11 @@ void main()
     worldSpace = yaw(worldSpace);
     worldSpace += translate(positionAttribute);
 
+    gl_Position = mvp * vec4(worldSpace, 1.0);
+
     // export normals and texture coordinates
-    position = worldSpace;
+    screen = gl_Position.xyz;
+    world = positionAttribute;
     normal = normalAttribute;
     texcoord = texcoordAttribute;
-
-    gl_Position = mvp * vec4(worldSpace, 1.0);
 }

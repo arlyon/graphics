@@ -1,6 +1,7 @@
 #version 410 core
 
-in vec3 position;
+in vec3 screen;
+in vec3 world;
 in vec3 normal;
 in vec2 texcoord;
 
@@ -62,8 +63,7 @@ void main()
     vec3 specular = vec3(0.3, 0.5, 0.6) * spec;
 
     // calculate fog
-    float relativeDistance = position.z;
-    vec4 fog = vec4(mix(fogColor, backgroundColor, smoothstep(10, 50, relativeDistance)), 1.0);
+    vec4 fog = vec4(mix(fogColor, backgroundColor, smoothstep(10, 50, screen.z)), 1.0);
 
-    color = mix(vec4(ambient + diffuse + specular, 1.0), fog, smoothstep(0, 30, relativeDistance));
+    color = mix(vec4(ambient + diffuse + specular, 1.0), fog, smoothstep(0, 30, screen.z));
 }
