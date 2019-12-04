@@ -66,7 +66,7 @@ int main() {
         fish_physics(registry, deltaTime);
         physics(registry, deltaTime);
         fish_population(registry, fishModel);
-		boids(registry);
+		boids(registry, &cam, deltaTime);
 
         render(registry, &cam, deltaTime);
         if (settings.enable_menu) {

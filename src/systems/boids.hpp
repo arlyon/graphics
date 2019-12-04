@@ -6,4 +6,4 @@
 
 #include <entt/entt.hpp>
 
-void boids(entt::registry &registry);
+void boids(entt::registry &registry, entt::entity* avoid, double deltaTime);
