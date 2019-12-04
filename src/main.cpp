@@ -33,7 +33,7 @@ int main() {
 
     shader partyFish = shader("shaders/vertex_fish.glsl", "shaders/fragment_party_fish.glsl");
     renderable fishModel = renderable("models/fish.obj", partyFish);
-    shader speaker = shader("shaders/vertex_fish.glsl", "shaders/fragment_speaker.glsl");
+    shader speaker = shader("shaders/vertex_speaker.glsl", "shaders/fragment_speaker.glsl");
     renderable cubeModel = renderable("models/cube.obj", speaker);
 
     auto cam = registry.create();
@@ -41,17 +41,11 @@ int main() {
     registry.assign<velocity>(cam, glm::vec3(0,0,0));
     registry.assign<camera>(cam, &settings.fov, window);
 
-    auto cube = registry.create();
-    registry.assign<position>(cube, glm::vec3(0,0,0), glm::quatLookAt(glm::vec3(0,0,-1), glm::vec3(0,1,0)));
-    registry.assign<renderable>(cube, cubeModel);
-
-    auto origin = registry.create();
-    registry.assign<position>(origin, glm::vec3(0,1.5,0), glm::quatLookAt(glm::vec3(0,0,-1), glm::vec3(0,1,0)));
-    registry.assign<renderable>(origin, cubeModel);
-
-    auto origin1 = registry.create();
-    registry.assign<position>(origin1, glm::vec3(0,-1.5,0), glm::quatLookAt(glm::vec3(0,0,-1), glm::vec3(0,1,0)));
-    registry.assign<renderable>(origin1, cubeModel);
+    for (int i : {0, 1, 2}) {
+        auto speakerEntity = registry.create();
+        registry.assign<position>(speakerEntity, glm::vec3(0,i * 1.5,0), glm::quatLookAt(glm::vec3(0,0,1), glm::vec3(0,1,0)));
+        registry.assign<renderable>(speakerEntity, cubeModel);
+    }
 
     double currentTime;
     double deltaTime;
@@ -83,5 +77,6 @@ int main() {
 
     teardown();
     fishModel.close();
+    cubeModel.close();
 }
 
