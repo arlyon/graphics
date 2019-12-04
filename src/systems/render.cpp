@@ -16,12 +16,18 @@
 #include "../components/components.hpp"
 #include "../settings.hpp"
 
+static double currentTime = 0;
+
 /**
  * Renders all models with positions from the
  * perspective of the provided camera entity.
  */
-void render(entt::registry &registry, entt::entity *cam, double time) {
-    auto color = Settings::getInstance().color;
+void render(entt::registry &registry, entt::entity *cam, double deltaTime) {
+    auto &s = Settings::getInstance();
+
+    currentTime += deltaTime * s.timeScale;
+
+    auto color = s.color;
     glClearColor(color[0], color[1], color[2], 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -49,7 +55,7 @@ void render(entt::registry &registry, entt::entity *cam, double time) {
         if (registry.has<fish>(object)) {
             fishComponent = &registry.get<fish>(object);
         }
-        model.render(objPos, camPos, projectionMatrix, viewMatrix, time, fishComponent);
+        model.render(objPos, camPos, projectionMatrix, viewMatrix, currentTime, fishComponent);
     }
 
     GLenum error = glGetError();

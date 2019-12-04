@@ -6,7 +6,7 @@
 
 #include <entt/entt.hpp>
 
-void render(entt::registry &registry, entt::entity *cam, double time);
+void render(entt::registry &registry, entt::entity *cam, double deltaTime);
 
 void renderUI();
 

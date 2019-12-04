@@ -54,7 +54,7 @@ int main() {
         fish_population(registry, fishModel);
 		boids(registry);
 
-        render(registry, &cam, currentTime);
+        render(registry, &cam, deltaTime);
         if (settings.enable_menu) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             renderUI();
