@@ -32,7 +32,19 @@ int main() {
     initializeInput(window);
 
     shader partyFish = shader("shaders/vertex_fish.glsl", "shaders/fragment_party_fish.glsl");
-    renderable fishModel = renderable("models/fish.obj", partyFish);
+    renderable instancedFishModel = renderable("models/fish.obj", partyFish);
+
+    // set up buffers for instancing
+    GLuint modelBuffer;
+    glGenBuffers(1, &modelBuffer);
+    instancedFishModel.addVertexAttributeMatrix(3, modelBuffer);
+    GLuint timeBuffer;
+    glGenBuffers(1, &timeBuffer);
+    instancedFishModel.addVertexAttributeFloat(7, timeBuffer);
+    GLuint hueBuffer;
+    glGenBuffers(1, &hueBuffer);
+    instancedFishModel.addVertexAttributeFloat(8, hueBuffer);
+
     shader speaker = shader("shaders/vertex_speaker.glsl", "shaders/fragment_speaker.glsl");
     renderable cubeModel = renderable("models/cube.obj", speaker);
 
@@ -59,13 +71,15 @@ int main() {
         /* Run Systems */
         fish_physics(registry, deltaTime);
         physics(registry, deltaTime);
-        fish_population(registry, fishModel);
+        fish_population(registry);
 		boids(registry, &cam, deltaTime);
 
-        render(registry, &cam, deltaTime);
         auto color = settings.color;
         glClearColor(color[0], color[1], color[2], 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        renderRenderables(registry, &cam, deltaTime);
+        renderFish(registry, &cam, deltaTime, partyFish, instancedFishModel, modelBuffer, timeBuffer, hueBuffer);
         if (settings.enable_menu) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             renderUI();
@@ -84,7 +98,7 @@ int main() {
     }
 
     teardown();
-    fishModel.close();
+    instancedFishModel.close();
     cubeModel.close();
 }
 

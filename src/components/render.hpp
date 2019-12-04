@@ -33,6 +33,8 @@ public:
     void loadTextures(material_textures textures);
 
     void close();
+
+    void prepareTextures();
 };
 
 /**
@@ -54,7 +56,13 @@ public:
     */
     renderable(const std::string &model, shader shader);
 
+    void addVertexAttributeMatrix(GLuint index, GLuint bufferID);
+
+    void addVertexAttributeFloat(GLuint index, GLuint bufferID);
+
     void render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, double time);
+
+    void setTextures();
 
     void draw(size_t count = 1);
 

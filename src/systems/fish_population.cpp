@@ -16,18 +16,17 @@
  *
  * Fish are spawned in and destroyed randomly.
  */
-void fish_population(entt::registry &registry, renderable fishModel) {
+void fish_population(entt::registry &registry) {
     auto &s = Settings::getInstance();
 
-    auto f = registry.view<fish, renderable, position>();
-    int64_t fishDeficit = s.fish - f.size();
+    auto fishView = registry.view<fish, position>();
+    int64_t fishDeficit = s.fish - fishView.size();
     if (fishDeficit >= 0) {
         // create some (or none)
         for (int i = 0; i < fishDeficit; i++) {
             auto entity = registry.create();
             registry.assign<position>(entity, glm::vec3(i, 0, 0), glm::quatLookAt(glm::vec3(0,0,-1), glm::vec3(0, 1, 0)));
             registry.assign<velocity>(entity, glm::vec3(0, 0, 0));
-            registry.assign<renderable>(entity, fishModel);
             registry.assign<fish>(entity, (uint8_t)(s.fish - fishDeficit + i) % 5);
         }
     } else {

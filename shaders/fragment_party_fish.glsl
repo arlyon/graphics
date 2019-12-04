@@ -4,6 +4,7 @@ in vec3 screen;
 in vec3 world;
 in vec3 normal;
 in vec2 texcoord;
+in float hueOffset;
 
 out vec4 color;
 
@@ -17,7 +18,6 @@ uniform sampler2D roughness;
 uniform vec3 lightDir = vec3(0, -1, 0);
 uniform int bpm = 125;
 uniform float ambientStrength = 0.5;
-uniform float hueShiftAmount = 0.0;
 uniform vec3 fogColor = vec3(20, 23, 55) / 255;
 uniform vec3 ambientColor = vec3(0.1, 0.4, 0.7);
 uniform vec3 backgroundColor = vec3(0.1, 0.12, 0.33);
@@ -50,7 +50,7 @@ vec3 hueShift(vec3 color, float hueAdjust){
 // blinn-phong with directional lighting to imitate the sun
 void main()
 {
-    vec3 albedo = hueShift(texture(diffuse, texcoord).rgb, hueShiftAmount * PI * 2);
+    vec3 albedo = hueShift(texture(diffuse, texcoord).rgb, hueOffset * PI * 2);
 
     // calculate ambient contribution
     vec3 ambient = ambientStrength * ambientColor * albedo;

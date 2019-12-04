@@ -227,17 +227,13 @@ renderable::render(position objPos, position camPos, const glm::mat4 &projection
     this->renderShader.setFloat("time", (float) time);
     this->renderShader.setMatrix("mvp", mvp);
     this->renderShader.setVector("cameraPos", camPos.position);
-    this->renderShader.loadTextures(this->textures);
+    this->renderShader.prepareTextures();
+    this->setTextures();
     this->draw();
-    glUseProgram(0);
 
-//    if (fishComponent != nullptr) {
-//        GLuint hueID = glGetUniformLocation(this->shaderProgramID, "hueShiftAmount");
-//        glUniform1f(hueID, fishComponent->getHueShift());
-//
-//        GLuint timeOffsetID = glGetUniformLocation(this->shaderProgramID, "timeOffset");
-//        glUniform1f(timeOffsetID, fishComponent->getTimeOffset());
-//    }
+    glUseProgram(0);
+}
+
 void renderable::draw(size_t count) {
     glBindVertexArray(this->vertexArrayID);
     if (count == 1) {
@@ -254,6 +250,45 @@ void renderable::close() {
     this->renderShader.close();
 }
 
+void renderable::setTextures() {
+    if (textures.diffuse) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, *textures.diffuse);
+    }
+
+    if (textures.roughness) {
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, *textures.roughness);
+    }
+
+    if (textures.metallic) {
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, *textures.metallic);
+    }
+}
+
+void renderable::addVertexAttributeMatrix(GLuint index, GLuint bufferID) {
+    glBindVertexArray(this->vertexArrayID);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+    size_t vec4Size = sizeof(glm::vec4);
+    for (uint8_t x : {0, 1, 2, 3}) {
+        glEnableVertexAttribArray(index + x);
+        glVertexAttribPointer(index + x, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (x * vec4Size));
+        glVertexAttribDivisor(index + x, 1);
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void renderable::addVertexAttributeFloat(GLuint index, GLuint bufferID) {
+    glBindVertexArray(this->vertexArrayID);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+    glEnableVertexAttribArray(index);
+    glVertexAttribPointer(index, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glVertexAttribDivisor(index, 1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
 
 shader::shader(const std::string &vertexShaderPath, const std::string &fragmentShaderPath) {
     try {
@@ -287,25 +322,10 @@ void shader::setVector(const std::string &name, glm::vec3 vector) {
     glUniform3fv(glGetUniformLocation(this->shaderProgramID, name.c_str()), 1, glm::value_ptr(vector));
 }
 
-void shader::loadTextures(const material_textures textures) {
+void shader::prepareTextures() {
     setInteger("diffuse", 0);
     setInteger("roughness", 1);
     setInteger("metallic", 2);
-
-    if (textures.diffuse) {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, *textures.diffuse);
-    }
-
-    if (textures.roughness) {
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, *textures.roughness);
-    }
-
-    if (textures.metallic) {
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, *textures.metallic);
-    }
 }
 
 void shader::close() {

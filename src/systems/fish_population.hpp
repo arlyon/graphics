@@ -7,4 +7,4 @@
 #include <entt/entt.hpp>
 #include "../components/components.hpp"
 
-void fish_population(entt::registry &registry, renderable fishModel);
+void fish_population(entt::registry &registry);

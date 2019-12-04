@@ -3,26 +3,26 @@
 layout (location = 0) in vec3 positionAttribute;
 layout (location = 1) in vec3 normalAttribute;
 layout (location = 2) in vec2 texcoordAttribute;
+layout (location = 3) in mat4 modelMatrixInstance;
+// 4
+// 5 in use by the matrix instance
+// 6
+layout (location = 7) in float timeOffsetInstance;
+layout (location = 8) in float hueOffsetInstance;
 
 out vec3 screen;
 out vec3 world;
 out vec3 normal;
 out vec2 texcoord;
+out float hueOffset;
 
-uniform mat4 mvp;
+uniform mat4 projectionViewMatrix;
 uniform float time;
-uniform float timeOffset;
 
 #define PI 3.14
 
-// Check https://thebookofshaders.com/05/ for more info
-// about how smoothstep works...
-float headMask(vec3 modelSpace, float start, float stop) {
-    return smoothstep(start, stop, modelSpace.z);
-}
-
 vec3 yaw(vec3 modelSpace) {
-    float yaw_a = sin((time + timeOffset) * PI * 2) * 0.1;
+    float yaw_a = sin((time + timeOffsetInstance) * PI * 2) * 0.1;
     float yaw_cos = cos(yaw_a);
     float yaw_sin = sin(yaw_a);
 
@@ -34,7 +34,7 @@ vec3 yaw(vec3 modelSpace) {
 }
 
 vec3 twist(vec3 modelSpace) {
-    float twist_a = headMask(modelSpace, -3, 8) * sin(modelSpace.z + (time + timeOffset) * PI * 2) * 0.8;
+    float twist_a = smoothstep(-3, 8, modelSpace.z) * sin(modelSpace.z + (time + timeOffsetInstance) * PI * 2) * 0.8;
     float twist_cos = cos(twist_a);
     float twist_sin = sin(twist_a);
 
@@ -46,7 +46,7 @@ vec3 twist(vec3 modelSpace) {
 }
 
 vec3 swim(vec3 modelSpace) {
-    float twist_a = headMask(modelSpace, -1.5, 5) * sin(modelSpace.z + (time + timeOffset) * PI * 2) * 0.6;
+    float twist_a = smoothstep(-1.5, 5, modelSpace.z) * sin(modelSpace.z + (time + timeOffsetInstance) * PI * 2) * 0.6;
     float twist_cos = cos(twist_a);
     float twist_sin = sin(twist_a);
 
@@ -58,23 +58,26 @@ vec3 swim(vec3 modelSpace) {
 }
 
 vec3 translate() {
-    float loc = sin((time + timeOffset) * (3 * PI) / 2) * 0.3;
+    float loc = sin((time + timeOffsetInstance) * (3 * PI) / 2) * 0.3;
     return vec3(pow(abs(loc), 0.77) / 6 * sign(loc), 0, 0);
 }
 
 void main()
 {
+    // apply model space transformations
     vec3 modelSpace = positionAttribute;
     modelSpace = swim(modelSpace);
     modelSpace = twist(modelSpace);
     modelSpace = yaw(modelSpace);
     modelSpace += translate();
 
-    gl_Position = mvp * vec4(modelSpace, 1.0);
+    // set vertex position
+    gl_Position = projectionViewMatrix * modelMatrixInstance * vec4(modelSpace, 1.0);
 
     // export normals and texture coordinates
     screen = gl_Position.xyz;
     world = positionAttribute;
     normal = normalAttribute;
     texcoord = texcoordAttribute;
+    hueOffset = hueOffsetInstance;
 }

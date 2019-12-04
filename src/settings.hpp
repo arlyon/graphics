@@ -20,7 +20,7 @@ public:
 
     void operator=(Settings const &) = delete;
 
-    int32_t fish = 30;
+    int32_t fish = 50;
     float fov = 80.0f;
     glm::vec3 color = glm::vec3(0.1f, 0.12f, 0.33f);
 
