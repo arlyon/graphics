@@ -71,14 +71,16 @@ void renderUI() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    ImGui::Begin("Debug Menu");
+    ImGui::Begin("Menu");
     ImGui::Text("Camera Settings");
     ImGui::SliderFloat("FOV", &settings.fov, 30.0f, 120.0f);
     ImGui::Separator();
     ImGui::Text("Scene Settings");
     ImGui::SliderInt("Fish Count", &settings.fish, 0, 1000);
-    ImGui::ColorEdit3("Background Color", (float *)&settings.color);
+    ImGui::ColorEdit3("Background Color", (float *) &settings.color);
     ImGui::SliderFloat("Time Scale", &settings.timeScale, 0.0f, 5.0f);
+    ImGui::Text("Controls");
+    if (ImGui::Button("Quit")) std::exit(0);
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
