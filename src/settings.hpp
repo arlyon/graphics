@@ -21,7 +21,7 @@ public:
     void operator=(Settings const &) = delete;
 
     int32_t fish = 30;
-    float fov = 60.0f;
+    float fov = 80.0f;
     glm::vec3 color = glm::vec3(0.1f, 0.12f, 0.33f);
 
     float timeScale = 1.0f;

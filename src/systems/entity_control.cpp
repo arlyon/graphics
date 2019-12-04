@@ -95,7 +95,7 @@ void entity_control(entt::registry &registry, entt::entity *cam, GLFWwindow *win
     if (glfwGetKey(window, GLFW_KEY_D)) strafe += glm::vec3(1, 0, 0);
     if (glfwGetKey(window, GLFW_KEY_SPACE)) strafe += glm::vec3(0, 1, 0);
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) strafe += glm::vec3(0, -1, 0);
-    vel.velocity += strafe * pos.orientation * (float)deltaTime * 2.0f; // move in the facing direction
+    vel.velocity += strafe * pos.orientation * (float)deltaTime * 5.0f; // move in the facing direction
 
     // fov
     while (!state.scroll.empty())
