@@ -28,7 +28,7 @@ void fish_population(entt::registry &registry, renderable fishModel) {
             registry.assign<position>(entity, glm::vec3(i, 0, 0), glm::quatLookAt(glm::vec3(0,0,-1), glm::vec3(0, 1, 0)));
             registry.assign<velocity>(entity, glm::vec3(0, 0, 0));
             registry.assign<renderable>(entity, fishModel);
-            registry.assign<fish>(entity, (s.fish - fishDeficit + i) % 5);
+            registry.assign<fish>(entity, (uint8_t)(s.fish - fishDeficit + i) % 5);
         }
     } else {
         // kill some

@@ -8,4 +8,4 @@
 
 void physics(entt::registry &registry, double deltaTime);
 
-void fish_physics(entt::registry &registry, float deltaTime);
+void fish_physics(entt::registry &registry, double deltaTime);

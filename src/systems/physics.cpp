@@ -41,7 +41,7 @@ void physics(entt::registry &registry, double deltaTime) {
  * Move the velocity and orientation toward one
  * another and accelerate in the orientation.
  */
-void fish_physics(entt::registry &registry, float) {
+void fish_physics(entt::registry &registry, double) {
     auto view = registry.view<position, velocity, fish>();
     for (auto entity : view) {
         position &pos = view.get<position>(entity);
