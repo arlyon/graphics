@@ -32,11 +32,9 @@ void fish_population(entt::registry &registry, renderable fishModel) {
         }
     } else {
         // kill some
-        auto fishIter = f.begin();
-        while (fishIter != f.end() && fishDeficit < 0) {
-            auto entity = std::next(fishIter);
-            registry.destroy(*entity);
-            fishDeficit++;
+        for (auto fish : fishView) {
+            registry.destroy(fish);
+            if (++fishDeficit == 0) break;
         }
     }
 }

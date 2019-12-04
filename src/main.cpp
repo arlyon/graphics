@@ -52,7 +52,6 @@ int main() {
     double lastTime = 0.0;
 
     while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
         currentTime = glfwGetTime();
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
@@ -64,6 +63,9 @@ int main() {
 		boids(registry, &cam, deltaTime);
 
         render(registry, &cam, deltaTime);
+        auto color = settings.color;
+        glClearColor(color[0], color[1], color[2], 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         if (settings.enable_menu) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             renderUI();
@@ -72,7 +74,13 @@ int main() {
             entity_control(registry, &cam, window, deltaTime);
         }
 
+        GLenum error;
+        while ((error = glGetError()) != GL_NO_ERROR) {
+            std::cout << "Render Error: 0x" << std::hex << error << std::endl;
+        }
+
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     teardown();

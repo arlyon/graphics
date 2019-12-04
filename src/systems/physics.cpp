@@ -24,8 +24,7 @@ void physics(entt::registry &registry, double deltaTime) {
 
     auto view = registry.view<position, velocity>();
     for (auto entity : view) {
-        position &pos = view.get<position>(entity);
-        velocity &vel = view.get<velocity>(entity);
+        auto [pos, vel] = view.get<position, velocity>(entity);
         pos.position += vel.velocity * (float) deltaTime * s.timeScale;
 
         // apply drag
@@ -44,8 +43,7 @@ void physics(entt::registry &registry, double deltaTime) {
 void fish_physics(entt::registry &registry, double) {
     auto view = registry.view<position, velocity, fish>();
     for (auto entity : view) {
-        position &pos = view.get<position>(entity);
-        velocity &vel = view.get<velocity>(entity);
+        auto [pos, vel] = view.get<position, velocity>(entity);
         vel.velocity = pos.orientation * forward * 5.0f;
     }
 }

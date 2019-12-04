@@ -56,5 +56,7 @@ public:
 
     void render(position objPos, position camPos, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix, double time);
 
+    void draw(size_t count = 1);
+
     void close();
 };

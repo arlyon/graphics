@@ -17,8 +17,8 @@
 #include "../settings.hpp"
 
 static double currentTime = 0;
-int windowWidth = 640;
-int windowHeight = 480;
+int windowWidth = 1280;
+int windowHeight = 720;
 
 void window_size_callback(GLFWwindow*, int width, int height) {
     windowWidth = width;
@@ -53,8 +53,7 @@ void render(entt::registry &registry, entt::entity *cam, double deltaTime) {
     // render all the renderables
     auto renderableView = registry.view<renderable, position>();
     for (auto entity : renderableView) {
-        auto objPos = renderableView.get<position>(entity);
-        auto model = renderableView.get<renderable>(entity);
+        auto [objPos, model] = renderableView.get<position, renderable>(entity);
         model.render(objPos, camPos, projectionMatrix, viewMatrix, currentTime);
     }
 

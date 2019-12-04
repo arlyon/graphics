@@ -44,6 +44,7 @@ GLuint compileShader(const std::string &shaderPath, const GLuint shaderType) {
         GLint maxLength = 0;
         glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);
 
+        std::cout << "Errors when compiling " << shaderPath << "." << std::endl;
         std::vector<GLchar> errorLog(maxLength);
         glGetShaderInfoLog(shaderID, maxLength, &maxLength, &errorLog[0]);
         printf("%s\n", &errorLog[0]);
@@ -132,17 +133,14 @@ loadGeometry(const tinyobj::ObjReader &reader, GLuint &vertexBufferID, GLuint &v
 
     glGenVertexArrays(1, &vertexArrayID);
     glBindVertexArray(vertexArrayID);
-    glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (2 * faceSides + 2) * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (2 * faceSides + 2) * sizeof(float),
-                          (void *) (faceSides * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (3 + 3 + 2) * sizeof(float), (void *) (0 * 3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (2 * faceSides + 2) * sizeof(float),
-                          (void *) (2 * faceSides * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (3 + 3 + 2) * sizeof(float), (void *) (1 * 3 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (3 + 3 + 2) * sizeof(float), (void *) (2 * 3 * sizeof(float)));
 
     return true;
 }
@@ -225,14 +223,12 @@ renderable::render(position objPos, position camPos, const glm::mat4 &projection
     glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), objPos.position) * glm::mat4_cast(objPos.orientation);
     glm::mat4 mvp = projectionMatrix * viewMatrix * modelMatrix;
 
-    glBindVertexArray(this->vertexArrayID);
     this->renderShader.use();
     this->renderShader.setFloat("time", (float) time);
     this->renderShader.setMatrix("mvp", mvp);
     this->renderShader.setVector("cameraPos", camPos.position);
     this->renderShader.loadTextures(this->textures);
-    glDrawArrays(GL_TRIANGLES, 0, this->triangles * 3);
-    glBindVertexArray(0);
+    this->draw();
     glUseProgram(0);
 
 //    if (fishComponent != nullptr) {
@@ -242,6 +238,14 @@ renderable::render(position objPos, position camPos, const glm::mat4 &projection
 //        GLuint timeOffsetID = glGetUniformLocation(this->shaderProgramID, "timeOffset");
 //        glUniform1f(timeOffsetID, fishComponent->getTimeOffset());
 //    }
+void renderable::draw(size_t count) {
+    glBindVertexArray(this->vertexArrayID);
+    if (count == 1) {
+        glDrawArrays(GL_TRIANGLES, 0, this->triangles * 3);
+    } else if (count > 1) {
+        glDrawArraysInstanced(GL_TRIANGLES, 0, this->triangles * 3, count);
+    }
+    glBindVertexArray(0);
 }
 
 void renderable::close() {
