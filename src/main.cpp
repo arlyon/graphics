@@ -49,7 +49,7 @@ int main() {
     renderable cubeModel = renderable("models/cube.obj", speaker);
 
     auto cam = registry.create();
-    registry.assign<position>(cam, glm::vec3(0,10,40), glm::quatLookAt(glm::vec3(0,0.2,-0.8), glm::vec3(0,1,0)));
+    registry.assign<position>(cam, glm::vec3(0,10,40), glm::quatLookAt(glm::normalize(glm::vec3(0,0.2,-0.8)), glm::vec3(0,1,0)));
     registry.assign<velocity>(cam, glm::vec3(0,0,0));
     registry.assign<camera>(cam, &settings.fov, window);
 
