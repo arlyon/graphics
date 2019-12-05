@@ -6,10 +6,7 @@
 #include "../components/components.hpp"
 #include "../settings.hpp"
 
-#define GROUP_SIZE 10
-#define BOID_AVOID_N 10
-#define MIN_BOID_DISTANCE 5
-#define MIN_CAMERA_DISTANCE 10
+const Settings &s = Settings::getInstance();
 
 /**
  * Rule 1: Boids want to move towards the centre of mass of neighbouring boids.
@@ -23,7 +20,7 @@ glm::vec3 rule1(entt::view<entt::exclude_t<>, position, fish> &sortedFish, entt:
         if (entity == ourEntity) { continue;} // the fish should ignore itself
         if (sortedFish.get<fish>(entity).getGroup() != sortedFish.get<fish>(ourEntity).getGroup()) continue; // the fish should only group with its own group
         direction += sortedFish.get<position>(entity).position;
-        if (++grouped_with == GROUP_SIZE) break;
+        if (++grouped_with == s.group_size) break;
     }
 
     return direction / (float) grouped_with - ourPosition.position;
@@ -42,9 +39,9 @@ glm::vec3 rule2(entt::view<entt::exclude_t<>, position, fish> &sortedFish, entt:
         auto entPos = sortedFish.get<position>(entity);
         auto gap = entPos.position - ourPosition.position;
         auto distance = glm::length(gap);
-        if (distance > MIN_BOID_DISTANCE) continue;
-        direction -= (gap / distance) * ((float)MIN_BOID_DISTANCE - distance);
-        if (++avoided == BOID_AVOID_N) break;
+        if (distance > s.min_boid_distance) continue;
+        direction -= (gap / distance) * (s.min_boid_distance - distance);
+        if (++avoided == s.boid_avoid) break;
     }
 
     return direction;
@@ -67,8 +64,8 @@ glm::vec3 rule5(entt::view<entt::exclude_t<>, position, fish> &sortedFish, entt:
 
     auto gap = ourPosition.position - avoidPos.position;
     auto distance = glm::length(gap);
-    if (distance > MIN_CAMERA_DISTANCE) return glm::vec3{};
-    else return gap * ((float)MIN_CAMERA_DISTANCE - distance);
+    if (distance > s.min_camera_distance) return glm::vec3{};
+    else return gap * (s.min_camera_distance - distance);
 }
 
 /**
@@ -77,8 +74,6 @@ glm::vec3 rule5(entt::view<entt::exclude_t<>, position, fish> &sortedFish, entt:
  * http://www.kfish.org/boids/pseudocode.html
  */
 void boids(entt::registry &registry, entt::entity *avoid, double deltaTime) {
-    auto &s = Settings::getInstance();
-
     auto allEntities = registry.view<fish, position>();
     for (auto ourEntity : allEntities) {
         auto &ourPosition = allEntities.get<position>(ourEntity);
@@ -96,7 +91,7 @@ void boids(entt::registry &registry, entt::entity *avoid, double deltaTime) {
 
         if (glm::length(direction) > 0.01f) {
             auto targetOrientation = glm::quatLookAt(glm::normalize(direction), glm::vec3(0, 1, 0));
-            auto newOrientation = glm::slerp(ourPosition.orientation, targetOrientation, 0.4f * (float)deltaTime * s.timeScale);
+            auto newOrientation = glm::slerp(ourPosition.orientation, targetOrientation, 0.4f * (float)deltaTime * s.time_scale);
             ourPosition.orientation = newOrientation;
         }
     }

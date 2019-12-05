@@ -33,7 +33,7 @@ void window_size_callback(GLFWwindow*, int width, int height) {
  */
 void renderRenderables(entt::registry &registry, entt::entity *cam, double deltaTime) {
     auto &s = Settings::getInstance();
-    currentTime += deltaTime * s.timeScale;
+    currentTime += deltaTime * s.time_scale;
 
     auto cameras = registry.view<camera, position>();
     camera camData = cameras.get<camera>(*cam);
@@ -129,12 +129,19 @@ void renderUI() {
     ImGui::Begin("Menu");
     ImGui::Text("Camera Settings");
     ImGui::SliderFloat("FOV", &settings.fov, 30.0f, 120.0f);
+    ImGui::SliderFloat("Sensitivity", &settings.mouse_sensitivity, 0.0f, 0.01f);
     ImGui::Separator();
     ImGui::Text("Scene Settings");
     ImGui::SliderInt("Fish Count", &settings.fish, 0, 1000);
     ImGui::ColorEdit3("Background Color", (float *) &settings.color);
-    ImGui::SliderFloat("Time Scale", &settings.timeScale, 0.0f, 5.0f);
-    ImGui::Text("Controls");
+    ImGui::SliderFloat("Time Scale", &settings.time_scale, 0.0f, 5.0f);
+    ImGui::Separator();
+    ImGui::Text("Swarm Settings");
+    ImGui::SliderInt("Max Group Size", &settings.group_size, 0, 20);
+    ImGui::SliderInt("Boids To Avoid", &settings.boid_avoid, 0, 20);
+    ImGui::SliderFloat("Minimum Distance (Boid)", &settings.min_boid_distance, 0.0f, 20.0f);
+    ImGui::SliderFloat("Minimum Distance (Camera)", &settings.min_camera_distance, 0.0f, 20.0f);
+    ImGui::Separator();
     if (ImGui::Button("Quit")) std::exit(0);
     ImGui::End();
     ImGui::Render();

@@ -9,7 +9,6 @@
 #include "../settings.hpp"
 
 #define DRAG 0.001f
-#define TURN_SPEED 0.1f
 
 static glm::vec3 forward = glm::vec3(0, 0, -1);
 
@@ -25,7 +24,7 @@ void physics(entt::registry &registry, double deltaTime) {
     auto view = registry.view<position, velocity>();
     for (auto entity : view) {
         auto [pos, vel] = view.get<position, velocity>(entity);
-        pos.position += vel.velocity * (float) deltaTime * s.timeScale;
+        pos.position += vel.velocity * (float) deltaTime * s.time_scale;
 
         // apply drag
         float dragForceMagnitude = pow(glm::length(vel.velocity), 2) * DRAG;
