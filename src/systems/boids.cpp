@@ -42,7 +42,7 @@ glm::vec3 rule2(entt::view<entt::exclude_t<>, position, fish> &sortedFish, entt:
         auto entPos = sortedFish.get<position>(entity);
         auto gap = entPos.position - ourPosition.position;
         auto distance = glm::length(gap);
-        if (distance > MIN_BOID_DISTANCE) break;
+        if (distance > MIN_BOID_DISTANCE) continue;
         direction -= (gap / distance) * ((float)MIN_BOID_DISTANCE - distance);
         if (++avoided == BOID_AVOID_N) break;
     }
