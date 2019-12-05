@@ -79,7 +79,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         renderRenderables(registry, &cam, deltaTime);
-        renderFish(registry, &cam, deltaTime, partyFish, instancedFishModel, modelBuffer, timeBuffer, hueBuffer);
+        renderFish(registry, &cam, partyFish, instancedFishModel, modelBuffer, timeBuffer, hueBuffer);
         if (settings.enable_menu) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             renderUI();

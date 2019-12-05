@@ -55,10 +55,10 @@ void renderRenderables(entt::registry &registry, entt::entity *cam, double delta
     }
 }
 
-static uint16_t fishCount = 0;
+static size_t fishCount = 0;
 
-void renderFish(entt::registry &registry, entt::entity *cam, double deltaTime, shader fishShader, renderable fishModel,
-                GLuint modelBuffer, GLuint timeBuffer, GLuint hueBuffer) {
+void renderFish(entt::registry &registry, entt::entity *cam, shader fishShader, renderable fishModel, GLuint modelBuffer,
+                GLuint timeBuffer, GLuint hueBuffer) {
     auto cameras = registry.view<camera, position>();
     camera camData = cameras.get<camera>(*cam);
     position camPos = cameras.get<position>(*cam);

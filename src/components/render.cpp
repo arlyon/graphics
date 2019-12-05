@@ -210,8 +210,7 @@ renderable::renderable(const std::string &model, shader renderShader) : renderSh
         std::exit(1);
     }
 
-    material_textures textures = {};
-    if (!loadTextures(reader, textures)) {
+    if (!loadTextures(reader, this->textures)) {
         std::cerr << "Error loading textures for " << model << "." << std::endl;
         std::exit(1);
     }
@@ -239,7 +238,7 @@ void renderable::draw(size_t count) {
     if (count == 1) {
         glDrawArrays(GL_TRIANGLES, 0, this->triangles * 3);
     } else if (count > 1) {
-        glDrawArraysInstanced(GL_TRIANGLES, 0, this->triangles * 3, count);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, this->triangles * 3, (GLsizei)count);
     }
     glBindVertexArray(0);
 }
@@ -270,10 +269,13 @@ void renderable::setTextures() {
 void renderable::addVertexAttributeMatrix(GLuint index, GLuint bufferID) {
     glBindVertexArray(this->vertexArrayID);
     glBindBuffer(GL_ARRAY_BUFFER, bufferID);
-    size_t vec4Size = sizeof(glm::vec4);
-    for (uint8_t x : {0, 1, 2, 3}) {
+    GLsizei vec4Size = sizeof(glm::vec4);
+    for (auto x : {0, 1, 2, 3}) {
+		// see https://stackoverflow.com/a/26283148/4913983
+		GLvoid const* pointer = static_cast<char const*>(0) + x * vec4Size;
+
         glEnableVertexAttribArray(index + x);
-        glVertexAttribPointer(index + x, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (x * vec4Size));
+        glVertexAttribPointer(index + x, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, pointer);
         glVertexAttribDivisor(index + x, 1);
     }
     glBindBuffer(GL_ARRAY_BUFFER, 0);
