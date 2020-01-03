@@ -3,7 +3,7 @@
 layout (location = 0) in vec3 positionAttribute;
 layout (location = 1) in vec3 normalAttribute;
 layout (location = 2) in vec2 texcoordAttribute;
-layout (location = 3) in mat4 modelMatrixInstance;
+layout (location = 3) in mat4 mvpMatrixInstance;
 // 4
 // 5 in use by the matrix instance
 // 6
@@ -16,7 +16,6 @@ out vec3 normal;
 out vec2 texcoord;
 out float hueOffset;
 
-uniform mat4 projectionViewMatrix;
 uniform float time;
 
 #define PI 3.14
@@ -72,7 +71,7 @@ void main()
     modelSpace += translate();
 
     // set vertex position
-    gl_Position = projectionViewMatrix * modelMatrixInstance * vec4(modelSpace, 1.0);
+    gl_Position = mvpMatrixInstance * vec4(modelSpace, 1.0);
 
     // export normals and texture coordinates
     screen = gl_Position.xyz;

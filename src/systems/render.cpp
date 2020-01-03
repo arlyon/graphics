@@ -71,8 +71,6 @@ void renderFish(entt::registry &registry, entt::entity *cam, shader fishShader, 
         1000.0f
     );
 
-    const glm::mat4 projectionViewMatrix = projectionMatrix * viewMatrix;
-
     // batch all per-object data for calculation on the shader
     auto fishView = registry.view<fish, position>();
     std::vector<glm::mat4> modelMatrices;
@@ -83,7 +81,7 @@ void renderFish(entt::registry &registry, entt::entity *cam, shader fishShader, 
     timeOffset.reserve(fishView.size());
     for (entt::entity entity : fishView) {
         auto [pos, f] = fishView.get<position, fish>(entity);
-        modelMatrices.push_back(glm::translate(glm::mat4(1.0f), pos.position) * glm::mat4_cast(pos.orientation));
+        modelMatrices.push_back(projectionMatrix * viewMatrix * glm::translate(glm::mat4(1.0f), pos.position) * glm::mat4_cast(pos.orientation));
         hueOffset.push_back(f.getHueShift());
         timeOffset.push_back(f.getTimeOffset());
     }
@@ -109,7 +107,6 @@ void renderFish(entt::registry &registry, entt::entity *cam, shader fishShader, 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     fishShader.use();
-    fishShader.setMatrix("projectionViewMatrix", projectionViewMatrix);
     fishShader.setFloat("time", (float) currentTime);
     fishShader.setVector("cameraPos", camPos.position);
     fishShader.prepareTextures();
