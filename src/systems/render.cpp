@@ -86,10 +86,10 @@ void renderFish(entt::registry &registry, entt::entity *cam, shader fishShader, 
         timeOffset.push_back(f.getTimeOffset());
     }
 
-    // matrices will change often, so dynamic draw and sub every frame the fish size doesnt change
+    // matrices will change often, so stream draw and sub every frame the fish size doesnt change
     glBindBuffer(GL_ARRAY_BUFFER, modelBuffer);
     if (fishView.size() != fishCount) {
-        glBufferData(GL_ARRAY_BUFFER, fishView.size() * sizeof(glm::mat4), glm::value_ptr(modelMatrices.front()), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, fishView.size() * sizeof(glm::mat4), glm::value_ptr(modelMatrices.front()), GL_STREAM_DRAW);
     } else {
         glBufferSubData(GL_ARRAY_BUFFER, 0, fishView.size() * sizeof(glm::mat4), glm::value_ptr(modelMatrices.front()));
     }
