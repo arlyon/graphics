@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(aquarium)
+project(aquarium VERSION "1.3.0")
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -64,7 +64,15 @@ install(FILES ${models} DESTINATION models)
 set(CPACK_PACKAGE_VENDOR "Alexander Lyon")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Aquarium Demoscene For 3d Graphics")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/readme.md")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/license.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/license.txt")
 set(CPACK_OUTPUT_FILE_PREFIX packages)
-set(CPACK_PACKAGE_VERSION "1.3.0")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+
+if (APPLE)
+    set(CPACK_BUNDLE_NAME "aquarium")
+    set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/resources/macOS.plist")
+    set(CPACK_BUNDLE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.icns")
+    set(CPACK_GENERATOR "Bundle")
+endif()
+
 include(CPack)
