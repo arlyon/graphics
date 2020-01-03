@@ -5,7 +5,7 @@
 #include <iostream>
 #include <queue>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 
 #include "entity_control.hpp"
 #include "../components/components.hpp"

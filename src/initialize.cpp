@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <imgui.h>
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <entt/entt.hpp>
 
 #include "../lib/imgui_impl_glfw.h"
@@ -62,14 +62,14 @@ GLFWwindow *initializeOpenGL() {
 
     glfwMakeContextCurrent(window);
 
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-    if (err) {
-        std::cerr << "Couldn't initialize glew" << std::endl;
-        std::cerr << glewGetErrorString(err);
-        glfwTerminate();
-        std::exit(-1);
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize OpenGL context" << std::endl;
+        std::exit(1);
     }
+
+    // Define the viewport dimensions
+    glViewport(0, 0, windowWidth, windowHeight);
 
 #ifndef NDEBUG
     // Output some debugging information

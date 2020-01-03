@@ -9,7 +9,7 @@
 #include <iostream>
 #include <variant>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <imgui.h>

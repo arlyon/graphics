@@ -31,8 +31,8 @@ add_executable(aquarium
         lib/imgui_impl_glfw.cpp lib/imgui_impl_glfw.h
         lib/imgui_impl_opengl3.cpp lib/imgui_impl_opengl3.h)
 
-target_compile_definitions(aquarium PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
-target_link_libraries(aquarium CONAN_PKG::glfw CONAN_PKG::glew CONAN_PKG::glm CONAN_PKG::imgui CONAN_PKG::entt CONAN_PKG::stb)
+target_compile_definitions(aquarium PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
+target_link_libraries(aquarium CONAN_PKG::glfw CONAN_PKG::glad CONAN_PKG::glm CONAN_PKG::imgui CONAN_PKG::entt CONAN_PKG::stb)
 
 # set compile options
 if ( MSVC )

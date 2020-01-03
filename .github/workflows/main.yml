@@ -15,21 +15,22 @@ jobs:
       - name: Install dependencies
         run: |
           pip install conan cmake
-          conan install . -s build_type=Debug --install-folder=debug --build=missing
+          conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+          conan install . -s build_type=Release --install-folder=release --build=missing
       - name: Package
         run: |
-          cmake . -B debug
-          cmake --build debug --target package
+          cmake -B release
+          cmake --build release --target package
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
           name: ${{ matrix.platform }}
-          path: debug/packages
+          path: release/packages
       - name: Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            debug/packages/*
+            release/packages/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

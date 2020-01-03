@@ -32,10 +32,12 @@ To build this software you must have:
 This project uses cmake, a meta build tool, to generate the correct 
 build scripts for your platform. The library dependencies are handled 
 via [`conan`](https://github.com/conan-io/conan), a package manager for 
-c++. You can install both with pip:
+c++. In addition, we need to add the bincrafters repo to access glad.
+You can install both with pip:
 
 ```bash
 pip install conan cmake
+conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan" 
 ```
 
 ### Libraries
@@ -46,7 +48,7 @@ This project uses a few libraries. Most of the packages are listed in
 | Library | Purpose | License |
 | ------- | ------- | ------- |
 | GLFW    | Lightweight cross-platform library for handling OpenGL windows, context, and input | zlib/libpng |
-| GLEW    | Cross-platform library for determining available OpenGL extensions | MIT |
+| glad    | Cross-platform library for determining available OpenGL extensions | MIT |
 | GLM     | Cross-platform math library for use with OpenGL | MIT |
 | imgui   | A simple UI library | MIT |
 | entt    | Simple ECS library for data-oriented programming | MIT |
