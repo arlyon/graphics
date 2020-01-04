@@ -2,6 +2,8 @@
 // Created by Alexander Lyon on 2019-10-23.
 //
 
+#include <glm/gtx/fast_square_root.hpp>
+
 #include "boids.hpp"
 #include "../components/components.hpp"
 #include "../settings.hpp"
@@ -38,7 +40,7 @@ glm::vec3 rule2(entt::view<entt::exclude_t<>, position, fish> &sortedFish, entt:
         if (entity == ourEntity) { continue; } // the fish should ignore itself
         auto entPos = sortedFish.get<position>(entity);
         auto gap = entPos.position - ourPosition.position;
-        auto distance = glm::length(gap);
+        auto distance = glm::fastLength(gap);
         if (distance > s.min_boid_distance) continue;
         direction -= (gap / distance) * (s.min_boid_distance - distance);
         if (++avoided == s.boid_avoid) break;
@@ -77,6 +79,8 @@ void boids(entt::registry &registry, entt::entity *avoid, double deltaTime) {
     auto allEntities = registry.view<fish, position>();
     for (auto ourEntity : allEntities) {
         auto &ourPosition = allEntities.get<position>(ourEntity);
+
+		// todo(arlyon) optimize: 80% of cpu time is spent sorting
         registry.sort<position>([ourPosition](auto &lhs, auto &rhs) {
             return (ourPosition.position - lhs.position).length() < (ourPosition.position - rhs.position).length();
         }, entt::insertion_sort());
