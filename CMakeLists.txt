@@ -37,6 +37,7 @@ target_link_libraries(aquarium CONAN_PKG::glfw CONAN_PKG::glad CONAN_PKG::glm CO
 # set compile options
 if ( MSVC )
     target_compile_options(aquarium PRIVATE /W4 /experimental:external /external:I $ENV{USERPROFILE}\\.conan /external:W0 /WX)
+	set_target_properties(aquarium PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup /SUBSYSTEM:WINDOWS")
 else()
     target_compile_options(aquarium PRIVATE -Wall -Wextra -pedantic)
 endif()
