@@ -33,7 +33,7 @@ vec3 yaw(vec3 modelSpace) {
 }
 
 vec3 twist(vec3 modelSpace) {
-    float twist_a = smoothstep(-3, 8, modelSpace.z) * sin(modelSpace.z + (time + timeOffsetInstance) * PI * 2) * 0.8;
+    float twist_a = smoothstep(-3.0, 8.0, modelSpace.z) * sin(modelSpace.z + (time + timeOffsetInstance) * PI * 2) * 0.8;
     float twist_cos = cos(twist_a);
     float twist_sin = sin(twist_a);
 
@@ -45,7 +45,7 @@ vec3 twist(vec3 modelSpace) {
 }
 
 vec3 swim(vec3 modelSpace) {
-    float twist_a = smoothstep(-1.5, 5, modelSpace.z) * sin(modelSpace.z + (time + timeOffsetInstance) * PI * 2) * 0.6;
+    float twist_a = smoothstep(-1.5, 5.0, modelSpace.z) * sin(modelSpace.z + (time + timeOffsetInstance) * PI * 2) * 0.6;
     float twist_cos = cos(twist_a);
     float twist_sin = sin(twist_a);
 

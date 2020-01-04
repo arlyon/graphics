@@ -72,5 +72,5 @@ void main()
     // calculate fog
     vec3 fog = mix(fogColor, backgroundColor, smoothstep(40.0, 150.0, screen.z));
 
-    color = vec4(mix(light, fog, smoothstep(20, 60.0, screen.z)), 1.0);
+    color = vec4(mix(light, fog, smoothstep(20.0, 60.0, screen.z)), 1.0);
 }
