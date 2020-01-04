@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
-project(aquarium VERSION "1.3.0")
-
 set(CMAKE_CXX_STANDARD 17)
+project(aquarium
+        VERSION "1.3.0"
+        DESCRIPTION "Aquarium Demoscene For 3d Graphics"
+        HOMEPAGE_URL "https://github.com/arlyon/graphics"
+        )
 
 if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -21,7 +24,7 @@ add_executable(aquarium
         src/components/components.cpp src/components/components.hpp
         src/components/render.cpp src/components/render.hpp
         src/components/physics.hpp
-		src/systems/boids.cpp src/systems/boids.hpp
+        src/systems/boids.cpp src/systems/boids.hpp
         src/systems/entity_control.cpp src/systems/entity_control.hpp
         src/systems/fish_population.cpp src/systems/fish_population.hpp
         src/systems/physics.cpp src/systems/physics.hpp
@@ -35,12 +38,12 @@ target_compile_definitions(aquarium PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 target_link_libraries(aquarium CONAN_PKG::glfw CONAN_PKG::glad CONAN_PKG::glm CONAN_PKG::imgui CONAN_PKG::entt CONAN_PKG::stb)
 
 # set compile options
-if ( MSVC )
+if (MSVC)
     target_compile_options(aquarium PRIVATE /W4 /experimental:external /external:I $ENV{USERPROFILE}\\.conan /external:W0 /WX)
-	set_target_properties(aquarium PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup /SUBSYSTEM:WINDOWS")
-else()
+    set_target_properties(aquarium PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup /SUBSYSTEM:WINDOWS")
+else ()
     target_compile_options(aquarium PRIVATE -Wall -Wextra -pedantic)
-endif()
+endif ()
 
 # copy shaders and models on build
 add_custom_target(copy_shaders ALL
@@ -62,18 +65,19 @@ file(GLOB models "models/*")
 install(FILES ${models} DESTINATION models)
 
 # cpack config
+set(CPACK_PACKAGE_Name "Aquarium")
 set(CPACK_PACKAGE_VENDOR "Alexander Lyon")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Aquarium Demoscene For 3d Graphics")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/readme.md")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/license.txt")
 set(CPACK_OUTPUT_FILE_PREFIX packages)
-set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_EXECUTABLES aquarium "Aquarium")
+set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.png")
 
 if (APPLE)
     set(CPACK_BUNDLE_NAME "aquarium")
     set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/resources/macOS.plist")
     set(CPACK_BUNDLE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.icns")
     set(CPACK_GENERATOR "Bundle")
-endif()
+endif ()
 
 include(CPack)

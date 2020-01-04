@@ -23,4 +23,5 @@ cp "$dest/icon_256x256@2x.png" "$dest/icon_512x512.png"
 convert -background none -resize '!1024x1024' "$1" "$dest/icon_512x512@2x.png"
 
 iconutil -c icns "$dest"
+cp "$dest/icon_256x256.png" "icon.png"
 rm -R "$dest"
