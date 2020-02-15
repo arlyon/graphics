@@ -65,7 +65,7 @@ file(GLOB models "models/*")
 install(FILES ${models} DESTINATION models)
 
 # cpack config
-set(CPACK_PACKAGE_Name "Aquarium")
+set(CPACK_PACKAGE_NAME "Aquarium")
 set(CPACK_PACKAGE_VENDOR "Alexander Lyon")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/readme.md")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/license.txt")
@@ -78,6 +78,9 @@ if (APPLE)
     set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/resources/macOS.plist")
     set(CPACK_BUNDLE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.icns")
     set(CPACK_GENERATOR "Bundle")
+elseif (WIN32)
+    set(CPACK_WIX_UPGRADE_GUID "b1f848cd-0554-4974-8437-ba0e3bb712cc")
+    set(CPACK_GENERATOR "WIX")
 endif ()
 
 include(CPack)

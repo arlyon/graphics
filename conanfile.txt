@@ -1,5 +1,5 @@
 [requires]
-glfw/3.3@bincrafters/stable
+glfw/3.3.2@bincrafters/stable
 glad/0.1.29@bincrafters/stable
 glm/0.9.9.5@g-truc/stable
 imgui/1.69@bincrafters/stable
