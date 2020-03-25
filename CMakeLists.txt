@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 set(CMAKE_CXX_STANDARD 17)
 project(aquarium
-        VERSION "1.3.0"
+        VERSION "1.3.2"
         DESCRIPTION "Aquarium Demoscene For 3d Graphics"
         HOMEPAGE_URL "https://github.com/arlyon/graphics"
         )
