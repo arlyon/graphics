@@ -20,7 +20,7 @@ jobs:
       - name: Package
         run: |
           cmake -B release
-          cmake --build release --target package
+          cmake --build release --target package --config Release
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:

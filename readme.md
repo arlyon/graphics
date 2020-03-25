@@ -62,10 +62,10 @@ This project uses a few libraries. Most of the packages are listed in
 ```bash
 conan install . -s build_type=Release --install-folder=release --build=missing
 cmake -B release
-cmake --build release --target aquarium
+cmake --build release --target aquarium --config Release
 
 # alternatively...
-cmake --build release --target package
+cmake --build release --target package --config Release
 ```
 
 ### Debug
@@ -73,7 +73,7 @@ cmake --build release --target package
 ```bash
 conan install . -s build_type=Debug --install-folder=debug --build=missing
 cmake -B debug
-cmake --build debug --target aquarium
+cmake --build debug --target aquarium --config Debug
 ```
 
 ## IDE Setup
