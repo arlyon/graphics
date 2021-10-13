@@ -32,12 +32,10 @@ To build this software you must have:
 This project uses cmake, a meta build tool, to generate the correct 
 build scripts for your platform. The library dependencies are handled 
 via [`conan`](https://github.com/conan-io/conan), a package manager for 
-c++. In addition, we need to add the bincrafters repo to access glad.
-You can install both with pip:
+c++.
 
 ```bash
 pip install conan cmake
-conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan" 
 ```
 
 ### Libraries

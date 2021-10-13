@@ -50,7 +50,7 @@ lib/imgui*
 cmake-build-*/
 !models/*.obj
 .vs
-Release
+release
 debug
 x64
 bin

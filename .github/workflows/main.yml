@@ -15,7 +15,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install conan cmake
-          conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
           conan install . -s build_type=Release --install-folder=release --build=missing
       - name: Package
         run: |
